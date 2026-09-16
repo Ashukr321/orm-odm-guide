@@ -1,5 +1,14 @@
 ## ORM/ODM Guide
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma" />
+  <img src="https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=sequelize&logoColor=white" alt="Sequelize" />
+  <img src="https://img.shields.io/badge/Mongoose-880000?style=for-the-badge&logo=mongoose&logoColor=white" alt="Mongoose" />
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
+  <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
+</p>
+
 A structured guide to ORMs (relational) and ODMs (document/NoSQL): concepts, examples with Prisma/Sequelize/Mongoose, comparisons, advanced topics, real-world use cases, and interview prep.
 
 ### Contents
@@ -140,6 +149,7 @@ A structured guide to ORMs (relational) and ODMs (document/NoSQL): concepts, exa
 | Topic | Path |
 |---|---|
 | Free Platforms & Databases | [resrouces/free-platforms-and-databases.md](resrouces/free-platforms-and-databases.md) |
+| Official Docs & Blogs | [references/official-docs-and-blogs.md](references/official-docs-and-blogs.md) |
 
 ## License
 
