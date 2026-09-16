@@ -135,6 +135,12 @@ A structured guide to ORMs (relational) and ODMs (document/NoSQL): concepts, exa
 | Scenario Based Questions | [11-interview/scenario-based-questions.md](11-interview/scenario-based-questions.md) |
 | System Design Questions | [11-interview/system-design-questions.md](11-interview/system-design-questions.md) |
 
+#### Resources
+
+| Topic | Path |
+|---|---|
+| Free Platforms & Databases | [resrouces/free-platforms-and-databases.md](resrouces/free-platforms-and-databases.md) |
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
