@@ -2,8 +2,8 @@
 
 | Topic | File |
 |---|---|
-| Mongoose Vs Prisma | [mongoose-vs-prisma.md](mongoose-vs-prisma.md) |
-| Orm Vs Odm | [orm-vs-odm.md](orm-vs-odm.md) |
-| Prisma Vs Sequelize | [prisma-vs-sequelize.md](prisma-vs-sequelize.md) |
-| Raw Sql Vs Orm | [raw-sql-vs-orm.md](raw-sql-vs-orm.md) |
-| Sql Vs Nosql | [sql-vs-nosql.md](sql-vs-nosql.md) |
+| Orm Vs Odm | [01_orm-vs-odm.md](01_orm-vs-odm.md) |
+| Sql Vs Nosql | [02_sql-vs-nosql.md](02_sql-vs-nosql.md) |
+| Raw Sql Vs Orm | [03_raw-sql-vs-orm.md](03_raw-sql-vs-orm.md) |
+| Prisma Vs Sequelize | [04_prisma-vs-sequelize.md](04_prisma-vs-sequelize.md) |
+| Mongoose Vs Prisma | [05_mongoose-vs-prisma.md](05_mongoose-vs-prisma.md) |

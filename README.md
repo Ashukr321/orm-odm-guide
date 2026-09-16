@@ -18,122 +18,122 @@ A structured guide to ORMs (relational) and ODMs (document/NoSQL): concepts, exa
 
 | Topic | Path |
 |---|---|
-| Advantages | [02-orm/advantages.md](02-orm/advantages.md) |
-| Disadvantages | [02-orm/disadvantages.md](02-orm/disadvantages.md) |
-| How Orm Works | [02-orm/how-orm-works.md](02-orm/how-orm-works.md) |
-| Orm Architecture | [02-orm/orm-architecture.md](02-orm/orm-architecture.md) |
-| What Is Orm | [02-orm/what-is-orm.md](02-orm/what-is-orm.md) |
-| When To Use Orm | [02-orm/when-to-use-orm.md](02-orm/when-to-use-orm.md) |
-| Why Orm | [02-orm/why-orm.md](02-orm/why-orm.md) |
+| What Is Orm | [02-orm/01_what-is-orm.md](02-orm/01_what-is-orm.md) |
+| Why Orm | [02-orm/02_why-orm.md](02-orm/02_why-orm.md) |
+| Advantages | [02-orm/03_advantages.md](02-orm/03_advantages.md) |
+| Disadvantages | [02-orm/04_disadvantages.md](02-orm/04_disadvantages.md) |
+| How Orm Works | [02-orm/05_how-orm-works.md](02-orm/05_how-orm-works.md) |
+| Orm Architecture | [02-orm/06_orm-architecture.md](02-orm/06_orm-architecture.md) |
+| When To Use Orm | [02-orm/07_when-to-use-orm.md](02-orm/07_when-to-use-orm.md) |
 
 #### Orm Concepts
 
 | Topic | Path |
 |---|---|
-| Connection Pooling | [03-orm-concepts/connection-pooling.md](03-orm-concepts/connection-pooling.md) |
-| Eager Vs Lazy Loading | [03-orm-concepts/eager-vs-lazy-loading.md](03-orm-concepts/eager-vs-lazy-loading.md) |
-| Entities | [03-orm-concepts/entities.md](03-orm-concepts/entities.md) |
-| Joins | [03-orm-concepts/joins.md](03-orm-concepts/joins.md) |
-| Migrations | [03-orm-concepts/migrations.md](03-orm-concepts/migrations.md) |
-| Models | [03-orm-concepts/models.md](03-orm-concepts/models.md) |
-| Query Builder | [03-orm-concepts/query-builder.md](03-orm-concepts/query-builder.md) |
-| Relationships | [03-orm-concepts/relationships.md](03-orm-concepts/relationships.md) |
-| Repositories | [03-orm-concepts/repositories.md](03-orm-concepts/repositories.md) |
-| Transactions | [03-orm-concepts/transactions.md](03-orm-concepts/transactions.md) |
+| Models | [03-orm-concepts/01_models.md](03-orm-concepts/01_models.md) |
+| Entities | [03-orm-concepts/02_entities.md](03-orm-concepts/02_entities.md) |
+| Relationships | [03-orm-concepts/03_relationships.md](03-orm-concepts/03_relationships.md) |
+| Joins | [03-orm-concepts/04_joins.md](03-orm-concepts/04_joins.md) |
+| Query Builder | [03-orm-concepts/05_query-builder.md](03-orm-concepts/05_query-builder.md) |
+| Eager Vs Lazy Loading | [03-orm-concepts/06_eager-vs-lazy-loading.md](03-orm-concepts/06_eager-vs-lazy-loading.md) |
+| Migrations | [03-orm-concepts/07_migrations.md](03-orm-concepts/07_migrations.md) |
+| Transactions | [03-orm-concepts/08_transactions.md](03-orm-concepts/08_transactions.md) |
+| Connection Pooling | [03-orm-concepts/09_connection-pooling.md](03-orm-concepts/09_connection-pooling.md) |
+| Repositories | [03-orm-concepts/10_repositories.md](03-orm-concepts/10_repositories.md) |
 
 #### Orm Examples
 
 | Topic | Path |
 |---|---|
-| Prisma Advanced Queries | [04-orm-examples/prisma/advanced-queries.md](04-orm-examples/prisma/advanced-queries.md) |
-| Prisma Crud | [04-orm-examples/prisma/crud.md](04-orm-examples/prisma/crud.md) |
-| Prisma Relationships | [04-orm-examples/prisma/relationships.md](04-orm-examples/prisma/relationships.md) |
-| Prisma Schema | [04-orm-examples/prisma/schema.md](04-orm-examples/prisma/schema.md) |
-| Prisma Setup | [04-orm-examples/prisma/setup.md](04-orm-examples/prisma/setup.md) |
-| Prisma Transactions | [04-orm-examples/prisma/transactions.md](04-orm-examples/prisma/transactions.md) |
-| Sequelize Crud | [04-orm-examples/sequelize/crud.md](04-orm-examples/sequelize/crud.md) |
-| Sequelize Models | [04-orm-examples/sequelize/models.md](04-orm-examples/sequelize/models.md) |
-| Sequelize Relationships | [04-orm-examples/sequelize/relationships.md](04-orm-examples/sequelize/relationships.md) |
-| Sequelize Setup | [04-orm-examples/sequelize/setup.md](04-orm-examples/sequelize/setup.md) |
-| Sequelize Transactions | [04-orm-examples/sequelize/transactions.md](04-orm-examples/sequelize/transactions.md) |
+| Prisma Setup | [04-orm-examples/prisma/01_setup.md](04-orm-examples/prisma/01_setup.md) |
+| Prisma Schema | [04-orm-examples/prisma/02_schema.md](04-orm-examples/prisma/02_schema.md) |
+| Prisma CRUD | [04-orm-examples/prisma/03_crud.md](04-orm-examples/prisma/03_crud.md) |
+| Prisma Relationships | [04-orm-examples/prisma/04_relationships.md](04-orm-examples/prisma/04_relationships.md) |
+| Prisma Advanced Queries | [04-orm-examples/prisma/05_advanced-queries.md](04-orm-examples/prisma/05_advanced-queries.md) |
+| Prisma Transactions | [04-orm-examples/prisma/06_transactions.md](04-orm-examples/prisma/06_transactions.md) |
+| Sequelize Setup | [04-orm-examples/sequelize/01_setup.md](04-orm-examples/sequelize/01_setup.md) |
+| Sequelize Models | [04-orm-examples/sequelize/02_models.md](04-orm-examples/sequelize/02_models.md) |
+| Sequelize CRUD | [04-orm-examples/sequelize/03_crud.md](04-orm-examples/sequelize/03_crud.md) |
+| Sequelize Relationships | [04-orm-examples/sequelize/04_relationships.md](04-orm-examples/sequelize/04_relationships.md) |
+| Sequelize Transactions | [04-orm-examples/sequelize/05_transactions.md](04-orm-examples/sequelize/05_transactions.md) |
 
 #### Odm
 
 | Topic | Path |
 |---|---|
-| Advantages | [05-odm/advantages.md](05-odm/advantages.md) |
-| Disadvantages | [05-odm/disadvantages.md](05-odm/disadvantages.md) |
-| How Odm Works | [05-odm/how-odm-works.md](05-odm/how-odm-works.md) |
-| Odm Vs Orm | [05-odm/odm-vs-orm.md](05-odm/odm-vs-orm.md) |
-| What Is Odm | [05-odm/what-is-odm.md](05-odm/what-is-odm.md) |
-| When To Use Odm | [05-odm/when-to-use-odm.md](05-odm/when-to-use-odm.md) |
-| Why Odm | [05-odm/why-odm.md](05-odm/why-odm.md) |
+| What Is Odm | [05-odm/01_what-is-odm.md](05-odm/01_what-is-odm.md) |
+| Why Odm | [05-odm/02_why-odm.md](05-odm/02_why-odm.md) |
+| Advantages | [05-odm/03_advantages.md](05-odm/03_advantages.md) |
+| Disadvantages | [05-odm/04_disadvantages.md](05-odm/04_disadvantages.md) |
+| How Odm Works | [05-odm/05_how-odm-works.md](05-odm/05_how-odm-works.md) |
+| Odm Vs Orm | [05-odm/06_odm-vs-orm.md](05-odm/06_odm-vs-orm.md) |
+| When To Use Odm | [05-odm/07_when-to-use-odm.md](05-odm/07_when-to-use-odm.md) |
 
 #### Odm Concepts
 
 | Topic | Path |
 |---|---|
-| Aggregation | [06-odm-concepts/aggregation.md](06-odm-concepts/aggregation.md) |
-| Collections | [06-odm-concepts/collections.md](06-odm-concepts/collections.md) |
-| Documents | [06-odm-concepts/documents.md](06-odm-concepts/documents.md) |
-| Indexes | [06-odm-concepts/indexes.md](06-odm-concepts/indexes.md) |
-| Middleware | [06-odm-concepts/middleware.md](06-odm-concepts/middleware.md) |
-| Models | [06-odm-concepts/models.md](06-odm-concepts/models.md) |
-| Population | [06-odm-concepts/population.md](06-odm-concepts/population.md) |
-| Schemas | [06-odm-concepts/schemas.md](06-odm-concepts/schemas.md) |
-| Validation | [06-odm-concepts/validation.md](06-odm-concepts/validation.md) |
+| Schemas | [06-odm-concepts/01_schemas.md](06-odm-concepts/01_schemas.md) |
+| Models | [06-odm-concepts/02_models.md](06-odm-concepts/02_models.md) |
+| Documents | [06-odm-concepts/03_documents.md](06-odm-concepts/03_documents.md) |
+| Collections | [06-odm-concepts/04_collections.md](06-odm-concepts/04_collections.md) |
+| Validation | [06-odm-concepts/05_validation.md](06-odm-concepts/05_validation.md) |
+| Middleware | [06-odm-concepts/06_middleware.md](06-odm-concepts/06_middleware.md) |
+| Population | [06-odm-concepts/07_population.md](06-odm-concepts/07_population.md) |
+| Aggregation | [06-odm-concepts/08_aggregation.md](06-odm-concepts/08_aggregation.md) |
+| Indexes | [06-odm-concepts/09_indexes.md](06-odm-concepts/09_indexes.md) |
 
 #### Odm Examples
 
 | Topic | Path |
 |---|---|
-| Mongoose Aggregation | [07-odm-examples/mongoose/aggregation.md](07-odm-examples/mongoose/aggregation.md) |
-| Mongoose Crud | [07-odm-examples/mongoose/crud.md](07-odm-examples/mongoose/crud.md) |
-| Mongoose Population | [07-odm-examples/mongoose/population.md](07-odm-examples/mongoose/population.md) |
-| Mongoose Relationships | [07-odm-examples/mongoose/relationships.md](07-odm-examples/mongoose/relationships.md) |
-| Mongoose Schema | [07-odm-examples/mongoose/schema.md](07-odm-examples/mongoose/schema.md) |
-| Mongoose Setup | [07-odm-examples/mongoose/setup.md](07-odm-examples/mongoose/setup.md) |
+| Mongoose Setup | [07-odm-examples/mongoose/01_setup.md](07-odm-examples/mongoose/01_setup.md) |
+| Mongoose Schema | [07-odm-examples/mongoose/02_schema.md](07-odm-examples/mongoose/02_schema.md) |
+| Mongoose CRUD | [07-odm-examples/mongoose/03_crud.md](07-odm-examples/mongoose/03_crud.md) |
+| Mongoose Relationships | [07-odm-examples/mongoose/04_relationships.md](07-odm-examples/mongoose/04_relationships.md) |
+| Mongoose Population | [07-odm-examples/mongoose/05_population.md](07-odm-examples/mongoose/05_population.md) |
+| Mongoose Aggregation | [07-odm-examples/mongoose/06_aggregation.md](07-odm-examples/mongoose/06_aggregation.md) |
 
 #### Comparisons
 
 | Topic | Path |
 |---|---|
-| Mongoose Vs Prisma | [08-comparisons/mongoose-vs-prisma.md](08-comparisons/mongoose-vs-prisma.md) |
-| Orm Vs Odm | [08-comparisons/orm-vs-odm.md](08-comparisons/orm-vs-odm.md) |
-| Prisma Vs Sequelize | [08-comparisons/prisma-vs-sequelize.md](08-comparisons/prisma-vs-sequelize.md) |
-| Raw Sql Vs Orm | [08-comparisons/raw-sql-vs-orm.md](08-comparisons/raw-sql-vs-orm.md) |
-| Sql Vs Nosql | [08-comparisons/sql-vs-nosql.md](08-comparisons/sql-vs-nosql.md) |
+| Orm Vs Odm | [08-comparisons/01_orm-vs-odm.md](08-comparisons/01_orm-vs-odm.md) |
+| Sql Vs Nosql | [08-comparisons/02_sql-vs-nosql.md](08-comparisons/02_sql-vs-nosql.md) |
+| Raw Sql Vs Orm | [08-comparisons/03_raw-sql-vs-orm.md](08-comparisons/03_raw-sql-vs-orm.md) |
+| Prisma Vs Sequelize | [08-comparisons/04_prisma-vs-sequelize.md](08-comparisons/04_prisma-vs-sequelize.md) |
+| Mongoose Vs Prisma | [08-comparisons/05_mongoose-vs-prisma.md](08-comparisons/05_mongoose-vs-prisma.md) |
 
 #### Advanced
 
 | Topic | Path |
 |---|---|
-| Caching | [09-advanced/caching.md](09-advanced/caching.md) |
-| Concurrency | [09-advanced/concurrency.md](09-advanced/concurrency.md) |
-| Database Performance | [09-advanced/database-performance.md](09-advanced/database-performance.md) |
-| Indexing | [09-advanced/indexing.md](09-advanced/indexing.md) |
-| N Plus One Problem | [09-advanced/n-plus-one-problem.md](09-advanced/n-plus-one-problem.md) |
-| Query Optimization | [09-advanced/query-optimization.md](09-advanced/query-optimization.md) |
-| Transactions | [09-advanced/transactions.md](09-advanced/transactions.md) |
+| N Plus One Problem | [09-advanced/01_n-plus-one-problem.md](09-advanced/01_n-plus-one-problem.md) |
+| Query Optimization | [09-advanced/02_query-optimization.md](09-advanced/02_query-optimization.md) |
+| Indexing | [09-advanced/03_indexing.md](09-advanced/03_indexing.md) |
+| Caching | [09-advanced/04_caching.md](09-advanced/04_caching.md) |
+| Transactions | [09-advanced/05_transactions.md](09-advanced/05_transactions.md) |
+| Concurrency | [09-advanced/06_concurrency.md](09-advanced/06_concurrency.md) |
+| Database Performance | [09-advanced/07_database-performance.md](09-advanced/07_database-performance.md) |
 
 #### Real World
 
 | Topic | Path |
 |---|---|
-| Analytics | [10-real-world/analytics.md](10-real-world/analytics.md) |
-| Banking | [10-real-world/banking.md](10-real-world/banking.md) |
-| Cms | [10-real-world/cms.md](10-real-world/cms.md) |
-| Ecommerce | [10-real-world/ecommerce.md](10-real-world/ecommerce.md) |
-| Social Media | [10-real-world/social-media.md](10-real-world/social-media.md) |
+| Ecommerce | [10-real-world/01_ecommerce.md](10-real-world/01_ecommerce.md) |
+| Social Media | [10-real-world/02_social-media.md](10-real-world/02_social-media.md) |
+| Banking | [10-real-world/03_banking.md](10-real-world/03_banking.md) |
+| Cms | [10-real-world/04_cms.md](10-real-world/04_cms.md) |
+| Analytics | [10-real-world/05_analytics.md](10-real-world/05_analytics.md) |
 
 #### Interview
 
 | Topic | Path |
 |---|---|
-| Odm Interview Questions | [11-interview/odm-interview-questions.md](11-interview/odm-interview-questions.md) |
-| Orm Interview Questions | [11-interview/orm-interview-questions.md](11-interview/orm-interview-questions.md) |
-| Scenario Based Questions | [11-interview/scenario-based-questions.md](11-interview/scenario-based-questions.md) |
-| System Design Questions | [11-interview/system-design-questions.md](11-interview/system-design-questions.md) |
+| Orm Interview Questions | [11-interview/01_orm-interview-questions.md](11-interview/01_orm-interview-questions.md) |
+| Odm Interview Questions | [11-interview/02_odm-interview-questions.md](11-interview/02_odm-interview-questions.md) |
+| Scenario Based Questions | [11-interview/03_scenario-based-questions.md](11-interview/03_scenario-based-questions.md) |
+| System Design Questions | [11-interview/04_system-design-questions.md](11-interview/04_system-design-questions.md) |
 
 #### Resources
 

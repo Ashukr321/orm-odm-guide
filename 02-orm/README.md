@@ -2,10 +2,10 @@
 
 | Topic | File |
 |---|---|
-| Advantages | [advantages.md](advantages.md) |
-| Disadvantages | [disadvantages.md](disadvantages.md) |
-| How Orm Works | [how-orm-works.md](how-orm-works.md) |
-| Orm Architecture | [orm-architecture.md](orm-architecture.md) |
-| What Is Orm | [what-is-orm.md](what-is-orm.md) |
-| When To Use Orm | [when-to-use-orm.md](when-to-use-orm.md) |
-| Why Orm | [why-orm.md](why-orm.md) |
+| What Is Orm | [01_what-is-orm.md](01_what-is-orm.md) |
+| Why Orm | [02_why-orm.md](02_why-orm.md) |
+| Advantages | [03_advantages.md](03_advantages.md) |
+| Disadvantages | [04_disadvantages.md](04_disadvantages.md) |
+| How Orm Works | [05_how-orm-works.md](05_how-orm-works.md) |
+| Orm Architecture | [06_orm-architecture.md](06_orm-architecture.md) |
+| When To Use Orm | [07_when-to-use-orm.md](07_when-to-use-orm.md) |
