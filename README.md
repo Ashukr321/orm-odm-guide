@@ -143,6 +143,12 @@ A structured guide to ORMs (relational) and ODMs (document/NoSQL): concepts, exa
 | Scenario Based Questions | [11-interview/03_scenario-based-questions.md](11-interview/03_scenario-based-questions.md) |
 | System Design Questions | [11-interview/04_system-design-questions.md](11-interview/04_system-design-questions.md) |
 
+#### Database Design Thinking
+
+| Topic | Path |
+|---|---|
+| Senior Dev Thought Process | [12-db-design/01_senior-dev-thought-process.md](12-db-design/01_senior-dev-thought-process.md) |
+
 #### Resources
 
 | Topic | Path |
