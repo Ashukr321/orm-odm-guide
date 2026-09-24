@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Database Drivers — Node.js &amp; Next.js</title>
+<style>
+  :root{
+    --bg:#0f172a;
+    --panel:#111827;
+    --text:#e5e7eb;
+    --muted:#9ca3af;
+    --accent:#38bdf8;
+    --accent2:#a78bfa;
+    --good:#34d399;
+    --warn:#fbbf24;
+    --code-bg:#0b1220;
+    --border:#1f2937;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    overflow:hidden;
+  }
+  #deck{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+  }
+  /* Big "DRIVER" watermark, title slide only */
+  .slide:first-child::before{
+    content:"DRIVER";
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%) rotate(-8deg);
+    font-size:22vw;
+    font-weight:900;
+    letter-spacing:.04em;
+    line-height:1;
+    white-space:nowrap;
+    color:transparent;
+    background:linear-gradient(120deg,var(--accent),var(--accent2) 60%,var(--good));
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-stroke:2px rgba(56,189,248,.5);
+    opacity:.09;
+    pointer-events:none;
+    user-select:none;
+    z-index:0;
+  }
+  .slide:first-child{overflow:hidden;}
+  .slide:first-child .center{position:relative;z-index:1;}
+  .slide{
+    position:absolute;
+    inset:0;
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    padding:6vh 8vw;
+    animation:fade .35s ease;
+  }
+  .slide.active{display:flex;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  .kicker{
+    color:var(--accent);
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-size:.8rem;
+    font-weight:700;
+    margin-bottom:.6rem;
+  }
+  h1{font-size:2.6rem;margin:0 0 .3rem 0;line-height:1.15;}
+  h2{font-size:2.1rem;margin:0 0 1rem 0;color:var(--text);}
+  h1 .accent, h2 .accent{color:var(--accent);}
+  p.lead{font-size:1.2rem;color:var(--muted);max-width:52ch;}
+  ul{font-size:1.15rem;line-height:1.7;}
+  ul li{margin-bottom:.35rem;}
+  .subtle{color:var(--muted);}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;}
+
+  pre{
+    background:var(--code-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:1rem 1.2rem;
+    overflow:auto;
+    font-size:.95rem;
+    line-height:1.55;
+    max-height:56vh;
+  }
+  code{font-family:"SF Mono",Consolas,"Fira Code",Menlo,monospace;}
+  .tag{
+    display:inline-block;
+    font-size:.75rem;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:.15rem .6rem;
+    border-radius:999px;
+    margin-bottom:.8rem;
+  }
+  .tag.node{background:rgba(52,211,153,.15);color:var(--good);border:1px solid rgba(52,211,153,.35);}
+  .tag.next{background:rgba(167,139,250,.15);color:var(--accent2);border:1px solid rgba(167,139,250,.35);}
+  .tag.warn{background:rgba(251,191,36,.15);color:var(--warn);border:1px solid rgba(251,191,36,.35);}
+
+  .flow{
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    flex-wrap:wrap;
+    font-size:1.05rem;
+    margin:1.4rem 0;
+  }
+  .flow .box{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:.7rem 1rem;
+  }
+  .flow .box.hl{border-color:var(--accent);color:var(--accent);}
+  .flow .arrow{color:var(--muted);}
+
+  table{border-collapse:collapse;width:100%;font-size:1.05rem;}
+  th,td{border:1px solid var(--border);padding:.6rem .9rem;text-align:left;}
+  th{background:var(--panel);color:var(--accent);}
+  td.mono{font-family:"SF Mono",Consolas,monospace;color:var(--accent2);}
+
+  .problem-list{display:flex;flex-direction:column;gap:1rem;}
+  .problem{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-left:4px solid var(--warn);
+    border-radius:8px;
+    padding:.8rem 1.1rem;
+  }
+  .problem b{color:var(--warn);}
+
+  .footer-note{
+    position:absolute;
+    bottom:3vh;
+    left:8vw;
+    color:var(--muted);
+    font-size:.85rem;
+  }
+  .progress{
+    position:fixed;
+    top:0;left:0;
+    height:4px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    z-index:10;
+    transition:width .25s ease;
+  }
+  .counter{
+    position:fixed;
+    bottom:2vh;right:2vw;
+    color:var(--muted);
+    font-size:.85rem;
+    background:rgba(255,255,255,.04);
+    padding:.3rem .7rem;
+    border-radius:999px;
+    border:1px solid var(--border);
+  }
+  .nav-hint{
+    position:fixed;
+    bottom:2vh;left:2vw;
+    color:var(--muted);
+    font-size:.8rem;
+  }
+  .center{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    height:100%;
+  }
+  .badges{display:flex;gap:.6rem;margin-top:1.4rem;}
+  .badge{
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:.4rem .8rem;
+    font-size:.85rem;
+    color:var(--muted);
+  }
+
+  @media print{
+    body{overflow:visible;}
+    .progress,.counter,.nav-hint{display:none;}
+    .slide{
+      display:flex !important;
+      position:relative;
+      height:100vh;
+      page-break-after:always;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div id="deck">
+
+  <!-- 1 -->
+  <section class="slide active">
+    <div class="center">
+      <div class="kicker">Database Foundation</div>
+      <h1>Database <span class="accent">Drivers</span></h1>
+      <p class="lead">The layer every ORM and ODM is built on top of — and the one Next.js makes you think about again.</p>
+      <div class="badges">
+        <span class="badge">Node.js</span>
+        <span class="badge">Next.js</span>
+        <span class="badge">pg · mysql2 · mongodb</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide">
+    <div class="kicker">01 — Concept</div>
+    <h2>What Is a Database Driver?</h2>
+    <p class="lead">The low-level library that speaks a database's wire protocol: opens the connection, authenticates, sends query bytes, parses the raw response.</p>
+    <div class="flow">
+      <div class="box">Your Code</div>
+      <div class="arrow">→</div>
+      <div class="box">ORM / ODM <span class="subtle">(optional)</span></div>
+      <div class="arrow">→</div>
+      <div class="box hl">Database Driver</div>
+      <div class="arrow">→</div>
+      <div class="box">Network</div>
+      <div class="arrow">→</div>
+      <div class="box">Database Server</div>
+    </div>
+    <ul>
+      <li>No ORM/ODM talks to the database directly — they all delegate to a driver.</li>
+      <li>Relational: <code>pg</code> (Postgres), <code>mysql2</code> (MySQL), <code>tedious</code>/<code>mssql</code> (SQL Server).</li>
+      <li>Document: official <code>mongodb</code> driver — Mongoose is a schema layer wrapped around it.</li>
+    </ul>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide">
+    <div class="kicker">02 — Why It Matters</div>
+    <h2>Why Learn the Driver If You Use an ORM?</h2>
+    <ul>
+      <li><b>Raw queries</b> when the ORM's generated SQL isn't optimal.</li>
+      <li><b>Debugging</b> — pooling, timeouts, prepared statements are driver-level behavior the ORM inherits.</li>
+      <li><b>Features the ORM hides</b> — Postgres LISTEN/NOTIFY, cursors, streaming large result sets, JSONB operators.</li>
+      <li><b>Interview signal</b> — "I use Prisma" is tooling; "Prisma still relies on connection pooling the same way <code>pg.Pool</code> does" is systems understanding.</li>
+    </ul>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <span class="tag node">Node.js</span>
+    <h2>PostgreSQL — <code>pg</code></h2>
+    <div class="grid2">
+      <pre><code>npm install pg</code></pre>
+      <div></div>
+    </div>
+    <pre><code>const { Pool } = require('pg');
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
+});
+
+async function getUserById(id) {
+  const { rows } = await pool.query(
+    'SELECT * FROM users WHERE id = $1',
+    [id]
+  );
+  return rows[0];
+}</code></pre>
+    <p class="subtle">Use <code>Pool</code>, never a lone <code>Client</code> — and always parameterize queries ($1, $2…), never string-concat values.</p>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <span class="tag node">Node.js</span>
+    <h2>MySQL — <code>mysql2</code></h2>
+    <pre><code>const mysql = require('mysql2/promise');
+
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: 'secret',
+  database: 'app_db',
+  waitForConnections: true,
+  connectionLimit: 10,
+});
+
+async function getUserById(id) {
+  const [rows] = await pool.query(
+    'SELECT * FROM users WHERE id = ?',
+    [id]
+  );
+  return rows[0];
+}</code></pre>
+    <p class="subtle"><code>mysql2</code> is the modern, Promise-native successor to the old <code>mysql</code> package — prefer it in all new code.</p>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <span class="tag node">Node.js</span>
+    <h2>MongoDB — native <code>mongodb</code> driver</h2>
+    <pre><code>const { MongoClient } = require('mongodb');
+
+const client = new MongoClient(process.env.MONGO_URI);
+let db;
+
+async function connectDB() {
+  if (db) return db;
+  await client.connect();
+  db = client.db('app_db');
+  return db;
+}
+
+async function getUserById(id) {
+  const database = await connectDB();
+  return database.collection('users').findOne({ _id: id });
+}</code></pre>
+    <p class="subtle"><code>MongoClient</code> already manages its own connection pool — reuse one instance for the app's lifetime.</p>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <div class="kicker">03 — The Core Idea</div>
+    <h2>Connection Pooling</h2>
+    <p class="lead">Opening a TCP/TLS connection is expensive. A pool keeps connections open and reused instead of reconnecting per query.</p>
+    <ul>
+      <li><b>Too small</b> → requests queue for a free connection.</li>
+      <li><b>Too large</b> → hits the database's hard connection limit (Postgres default: <code>100</code>), and can take the server down.</li>
+      <li>Rule of thumb: <span class="subtle">pool size relates to (DB connection limit ÷ number of app instances)</span>, not "as high as possible."</li>
+    </ul>
+    <p class="subtle">This one idea is <em>why</em> Next.js on serverless needs special handling — next.</p>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide">
+    <span class="tag next">Next.js</span>
+    <h2>Problem 1 — Hot Reload Leaks Pools (dev only)</h2>
+    <p class="lead">Dev mode clears the module cache on every file save. A pool created at module scope gets recreated — and the old one never closes.</p>
+    <pre><code>// lib/db.js
+import { Pool } from 'pg';
+
+const globalForPg = globalThis;
+
+export const pool =
+  globalForPg.pgPool ??
+  new Pool({ connectionString: process.env.DATABASE_URL, max: 10 });
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPg.pgPool = pool;
+}</code></pre>
+    <p class="subtle">Same <code>globalThis</code> caching pattern the Prisma docs use for <code>PrismaClient</code> — not Prisma-specific, it applies to any client instantiated at module scope.</p>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide">
+    <span class="tag next">Next.js</span>
+    <h2>Problem 2 — Serverless Scale-Out</h2>
+    <p class="lead">Each invocation can be a fresh isolated instance. 10-connection pool × 50 concurrent instances = 500 connections — past most managed Postgres limits.</p>
+    <div class="problem-list">
+      <div class="problem"><b>Fix 1 —</b> put a pooling proxy in front (PgBouncer, or managed: Neon / Supabase / RDS Proxy).</div>
+      <div class="problem"><b>Fix 2 —</b> keep <code>max</code> low per instance (1–5), you're one of many concurrent instances.</div>
+      <div class="problem"><b>Fix 3 —</b> prefer HTTP/WebSocket-based serverless drivers (<code>@neondatabase/serverless</code>, PlanetScale).</div>
+      <div class="problem"><b>Fix 4 —</b> reuse the client across warm invocations via the same <code>globalThis</code> pattern (Node.js runtime only).</div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide">
+    <span class="tag warn">Edge Runtime</span>
+    <h2>Problem 3 — Edge Can't Use Most Node.js Drivers</h2>
+    <p class="lead"><code>export const runtime = 'edge'</code> runs in a V8 isolate — no raw TCP socket API. <code>pg</code>, <code>mysql2</code>, and the standard <code>mongodb</code> driver simply don't work there.</p>
+    <ul>
+      <li>Default to the <b>Node.js runtime</b> for anything using a traditional driver.</li>
+      <li>Need Edge anyway? Use an HTTP-based driver: <code>@neondatabase/serverless</code>, <code>@vercel/postgres</code>, <code>@planetscale/database</code>, or MongoDB's <b>Data API</b>.</li>
+    </ul>
+    <pre><code>// app/api/users/[id]/route.js
+import { pool } from '@/lib/db'; // globalThis-cached pool
+
+export async function GET(_req, { params }) {
+  const { rows } = await pool.query(
+    'SELECT * FROM users WHERE id = $1',
+    [params.id]
+  );
+  if (!rows[0]) return Response.json({ error: 'Not found' }, { status: 404 });
+  return Response.json(rows[0]);
+}</code></pre>
+  </section>
+
+  <!-- 11 -->
+  <section class="slide">
+    <div class="kicker">04 — Where Each Layer Fits</div>
+    <h2>Driver vs ORM vs ODM</h2>
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>Example</th><th>Talks To</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mono">Driver</td><td>pg, mysql2, mongodb</td><td>Database wire protocol directly</td></tr>
+        <tr><td class="mono">ORM</td><td>Prisma, Sequelize, TypeORM</td><td>Driver (or own engine, same protocol)</td></tr>
+        <tr><td class="mono">ODM</td><td>Mongoose</td><td>mongodb driver</td></tr>
+      </tbody>
+    </table>
+    <p class="subtle" style="margin-top:1.2rem;">Most real apps use an ORM/ODM for ~95% of queries and drop to the raw driver — often exposed by the ORM itself (<code>prisma.$queryRaw</code>, <code>sequelize.query()</code>) — for the rest.</p>
+  </section>
+
+  <!-- 12 -->
+  <section class="slide">
+    <div class="kicker">Interview-Ready Summary</div>
+    <h2>What to Say Cold</h2>
+    <ul>
+      <li>A driver implements a database's wire protocol; ORMs/ODMs are built on top of one.</li>
+      <li>Always use a <b>connection pool</b>, sized relative to the DB's connection limit — not per-app intuition.</li>
+      <li>Next.js, two failure modes to know cold:
+        <ul>
+          <li><b>Dev hot reload</b> → cache the pool on <code>globalThis</code>.</li>
+          <li><b>Serverless scale-out</b> → pooling proxy or HTTP-based serverless driver, not a bigger <code>max</code>.</li>
+        </ul>
+      </li>
+      <li><b>Edge Runtime</b> can't use standard Node.js drivers — needs HTTP/WebSocket drivers, or run on the Node.js runtime instead.</li>
+    </ul>
+  </section>
+
+</div>
+
+<div class="counter" id="counter"></div>
+<div class="nav-hint">← → / Space to navigate · F for fullscreen</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let idx = 0;
+
+  function render(){
+    slides.forEach((s,i)=>s.classList.toggle('active', i===idx));
+    document.getElementById('counter').textContent = (idx+1)+' / '+slides.length;
+    document.getElementById('progress').style.width = ((idx+1)/slides.length*100)+'%';
+  }
+
+  function go(delta){
+    idx = Math.min(Math.max(idx+delta,0), slides.length-1);
+    render();
+  }
+
+  window.addEventListener('keydown', (e)=>{
+    if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){ e.preventDefault(); go(1); }
+    if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); go(-1); }
+    if(e.key==='Home'){ idx=0; render(); }
+    if(e.key==='End'){ idx=slides.length-1; render(); }
+    if(e.key==='f' || e.key==='F'){
+      if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  document.getElementById('deck').addEventListener('click', (e)=>{
+    const rect = document.getElementById('deck').getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    if(clickX > rect.width/2) go(1); else go(-1);
+  });
+
+  render();
+</script>
+
+</body>
+</html>
