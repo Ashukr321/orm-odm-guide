@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Transactions (Advanced) · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 05 of 08</div><div class="num"><b>01</b> / 12</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>Transactions <span class="g">(Advanced)</span></h1><div class="lead"><p>The basics (what a transaction is, how each ORM opens one) are in goes wrong under load: isolation anomalies, retries, deadlocks, and transactions that span more than one system.</p></div><div class="meta"><span><b>10</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>01 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Transactions (Advanced)</div><div class="num"><b>02</b> / 12</div></div>
+<h2>ACID in One Table</h2><div class="body"><table><thead><tr><th>Letter</th><th>Guarantee</th><th>What provides it</th></tr></thead><tbody><tr><td><strong>A</strong>tomicity</td><td>All statements commit, or none do</td><td>Write-ahead log, rollback</td></tr><tr><td><strong>C</strong>onsistency</td><td>Constraints hold before and after</td><td><code>NOT NULL</code>, <code>UNIQUE</code>, <code>FOREIGN KEY</code>, <code>CHECK</code></td></tr><tr><td><strong>I</strong>solation</td><td>Concurrent transactions don't see each other's partial work</td><td>Isolation level, MVCC, locks</td></tr><tr><td><strong>D</strong>urability</td><td>A committed change survives a crash</td><td>WAL flushed to disk (<code>fsync</code>)</td></tr></tbody></table>
+<p>Isolation is the one you tune, and the one that causes most surprises.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>02 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Transactions (Advanced)</div><div class="num"><b>03</b> / 12</div></div>
+<h2>Concurrency Anomalies</h2><div class="body"><table><thead><tr><th>Anomaly</th><th>What happens</th></tr></thead><tbody><tr><td>Dirty read</td><td>T2 reads a row T1 changed but hasn't committed; T1 rolls back</td></tr><tr><td>Non-repeatable read</td><td>T1 reads a row twice and gets different values because T2 committed in between</td></tr><tr><td>Phantom read</td><td>T1 runs the same <code>WHERE</code> twice and gets new rows T2 inserted</td></tr><tr><td>Lost update</td><td>T1 and T2 both read <code>balance = 100</code>, both write back a new value; one write is lost</td></tr><tr><td>Write skew</td><td>T1 and T2 each check a condition, then write different rows; together they break the rule</td></tr></tbody></table>
+<pre><code>Write skew: <span class="s">"at least one doctor must stay on call"</span>
+T1: SELECT count(*) FROM doctors WHERE on_call   → 2
+T2: SELECT count(*) FROM doctors WHERE on_call   → 2
+T1: UPDATE doctors SET on_call = false WHERE id = 1
+T2: UPDATE doctors SET on_call = false WHERE id = 2
+Both commit → nobody is on call</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>03 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Transactions (Advanced)</div><div class="num"><b>04</b> / 12</div></div>
+<h2>Isolation Levels</h2><div class="body"><table><thead><tr><th>Level</th><th>Dirty read</th><th>Non-repeatable</th><th>Phantom</th><th>Lost update / write skew</th></tr></thead><tbody><tr><td>Read Uncommitted</td><td>Possible*</td><td>Possible</td><td>Possible</td><td>Possible</td></tr><tr><td>Read Committed</td><td>No</td><td>Possible</td><td>Possible</td><td>Possible</td></tr><tr><td>Repeatable Read</td><td>No</td><td>No</td><td>Possible**</td><td>Lost update blocked in PG; write skew possible</td></tr><tr><td>Serializable</td><td>No</td><td>No</td><td>No</td><td>No</td></tr></tbody></table>
+<p>* PostgreSQL treats Read Uncommitted as Read Committed.<br>** PostgreSQL's Repeatable Read is snapshot isolation, so phantoms don't appear there either.</p>
+<table><thead><tr><th>Database</th><th>Default</th></tr></thead><tbody><tr><td>PostgreSQL</td><td>Read Committed</td></tr><tr><td>MySQL InnoDB</td><td>Repeatable Read</td></tr><tr><td>SQL Server</td><td>Read Committed</td></tr><tr><td>MongoDB transactions</td><td>Snapshot (with <code>readConcern: 'snapshot'</code>)</td></tr></tbody></table>
+<p>Stricter levels are safer but abort more transactions under contention.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>04 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Transactions (Advanced)</div><div class="num"><b>05</b> / 12</div></div>
+<h2>Setting the Isolation Level</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// Prisma</span>
+import { Prisma } from <span class="s">'@prisma/client'</span>;
+
+await prisma.$transaction(
+  async (tx) =&gt; { /* ... */ },
+  { isolationLevel: Prisma.TransactionIsolationLevel.Serializable, maxWait: 5000, timeout: 10000 },
+);
+
+<span class="c">// Sequelize</span>
+import { Transaction } from <span class="s">'sequelize'</span>;
+
+await sequelize.transaction(
+  { isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE },
+  async (t) =&gt; { /* pass { transaction: t } to every query */ },
+);
+
+<span class="c">// Mongoose / MongoDB</span>
+await mongoose.connection.transaction(
+  async (session) =&gt; { /* pass { session } to every operation */ },
+  { readConcern: { level: <span class="s">'snapshot'</span> }, writeConcern: { w: <span class="s">'majority'</span> } },
+);</code></pre>
+<p>Use Serializable for the few operations with real invariants (money, inventory, scheduling), not as a global default.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>05 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Transactions (Advanced) · 1/2</div><div class="num"><b>06</b> / 12</div></div>
+<h2>Retrying Serialization Failures</h2><div class="body"><p>Under Repeatable Read or Serializable, the database aborts one of two conflicting transactions. The application must <strong>retry the whole transaction</strong>.</p>
+<h4>The Errors to Catch</h4>
+<table><thead><tr><th>Database</th><th>Error</th></tr></thead><tbody><tr><td>PostgreSQL</td><td><code>40001 serialization_failure</code>, <code>40P01 deadlock_detected</code></td></tr><tr><td>MySQL</td><td><code>1213 ER_LOCK_DEADLOCK</code>, <code>1205 ER_LOCK_WAIT_TIMEOUT</code></td></tr><tr><td>Prisma</td><td><code>P2034</code> (write conflict or deadlock)</td></tr><tr><td>MongoDB</td><td>Error label <code>TransientTransactionError</code></td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>06 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Transactions (Advanced) · 2/2</div><div class="num"><b>07</b> / 12</div></div>
+<h2>Retrying Serialization Failures</h2><div class="body"><h4>A Retry Wrapper</h4>
+<pre><span class="lang">js</span><code>async function withRetry(fn, attempts = 3) {
+  for (let i = 1; ; i++) {
+    try {
+      return await prisma.$transaction(fn, {
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+      });
+    } catch (e) {
+      if (e.code !== <span class="s">'P2034'</span> || i === attempts) throw e;
+      await new Promise((r) =&gt; setTimeout(r, 20 * 2 ** i + Math.random() * 20));   <span class="c">// backoff + jitter</span>
+    }
+  }
+}</code></pre>
+<p>The transaction function must be <strong>safe to re-run</strong>: no emails, payments or HTTP calls inside it. MongoDB's <code>session.withTransaction()</code> already retries transient errors.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>07 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Transactions (Advanced)</div><div class="num"><b>08</b> / 12</div></div>
+<h2>Deadlocks</h2><div class="body"><pre><code>T1: UPDATE accounts SET ... WHERE id = 1;   -- locks row 1
+T2: UPDATE accounts SET ... WHERE id = 2;   -- locks row 2
+T1: UPDATE accounts SET ... WHERE id = 2;   -- waits for T2
+T2: UPDATE accounts SET ... WHERE id = 1;   -- waits for T1 → deadlock, one is aborted</code></pre>
+<ul><li><strong>Lock in a consistent order</strong>: sort IDs before updating several rows.</li><li>Keep transactions <strong>short</strong>, so locks are held briefly.</li><li>Index the columns in <code>WHERE</code>, so updates lock only the rows they need (MySQL locks every row it scans).</li><li>Treat deadlocks as retryable errors, like serialization failures.</li></ul>
+<pre><span class="lang">js</span><code>const [first, second] = [fromId, toId].sort((a, b) =&gt; a - b);
+await tx.$queryRaw`SELECT id FROM accounts WHERE id IN (${first}, ${second}) ORDER BY id FOR UPDATE`;</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>08 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Transactions (Advanced)</div><div class="num"><b>09</b> / 12</div></div>
+<h2>Long Transactions Hurt Everyone</h2><div class="body"><table><thead><tr><th>Problem</th><th>Why</th></tr></thead><tbody><tr><td>Lock waits</td><td>Other writers queue behind your row and table locks</td></tr><tr><td>Pool exhaustion</td><td>The connection stays checked out for the whole transaction</td></tr><tr><td>MVCC bloat</td><td>PostgreSQL can't vacuum rows that an open transaction might still see</td></tr><tr><td>Timeouts</td><td>Prisma interactive transactions default to a 5 s <code>timeout</code>; MongoDB aborts after 60 s</td></tr></tbody></table>
+<pre><span class="lang">js</span><code><span class="c">// Bad: an HTTP call while holding locks</span>
+await prisma.$transaction(async (tx) =&gt; {
+  const order = await tx.order.create({ data });
+  await stripe.paymentIntents.create({ amount: order.total, currency: <span class="s">'usd'</span> });   <span class="c">// slow, can't roll back</span>
+});
+
+<span class="c">// Better: call out first (with an idempotency key), then write quickly</span>
+const intent = await stripe.paymentIntents.create(
+  { amount, currency: <span class="s">'usd'</span> },
+  { idempotencyKey: orderKey },
+);
+await prisma.order.create({ data: { ...data, paymentIntentId: intent.id } });</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>09 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Transactions (Advanced)</div><div class="num"><b>10</b> / 12</div></div>
+<h2>Across Services: Outbox and Sagas</h2><div class="body"><p>A database transaction can't include Kafka, a payment API or another service's database. Two-phase commit exists but is rarely worth it.</p>
+<p><strong>Transactional outbox:</strong> write the event to a table in the same transaction, and a separate worker publishes it.</p>
+<pre><span class="lang">js</span><code>await prisma.$transaction([
+  prisma.order.create({ data: order }),
+  prisma.outbox.create({ data: { topic: <span class="s">'order.created'</span>, payload: order } }),
+]);
+<span class="c">// Worker: SELECT ... FROM outbox WHERE sent_at IS NULL FOR UPDATE SKIP LOCKED → publish → mark sent</span></code></pre>
+<p><strong>Saga:</strong> a chain of local transactions, each with a <strong>compensating action</strong> (refund, release stock) if a later step fails.</p>
+<p>Consumers must be <strong>idempotent</strong>, because the outbox guarantees <em>at-least-once</em> delivery.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>10 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Transactions (Advanced)</div><div class="num"><b>11</b> / 12</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li>Isolation anomalies: <strong>dirty read, non-repeatable read, phantom, lost update, write skew</strong>.</li><li>Defaults: <strong>PostgreSQL Read Committed</strong>, <strong>MySQL Repeatable Read</strong>. Only <strong>Serializable</strong> prevents write skew.</li><li>Stricter isolation means <strong>aborts</strong>: retry the whole transaction on <code>40001</code>, deadlocks or Prisma <code>P2034</code>, with backoff.</li><li>Prevent deadlocks with <strong>consistent lock ordering</strong>, short transactions and good indexes.</li><li>Never make network calls inside a transaction.</li><li>Across services, use the <strong>transactional outbox</strong> and <strong>sagas</strong> with idempotent consumers instead of distributed transactions.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>11 / 12</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>12</b> / 12</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's Transactions <span class="g">(Advanced)</span>.</h1><p class="src"><em>Sources: PostgreSQL transaction isolation, MySQL InnoDB locking, Prisma transactions, MongoDB transactions. Full list in <a href="references.html">references</a>.</em></p><div class="actions"><a class="btn primary" href="06-concurrency.html">Next deck: Concurrency →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>12 / 12</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>

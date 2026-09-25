@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Database Performance · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 07 of 08</div><div class="num"><b>01</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>Database <span class="g">Performance</span></h1><div class="lead"><p>Query tuning fixes one slow statement. Database performance is the whole system: round trips, connections, schema, memory, maintenance and how you scale once one server isn't enough.</p></div><div class="meta"><span><b>11</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>01 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Database Performance</div><div class="num"><b>02</b> / 13</div></div>
+<h2>Where the Time Goes</h2><div class="body"><pre><code>Request latency =  wait for a pooled connection
+                +  network round trip(s) to the database
+                +  query planning + execution (CPU, disk, locks)
+                +  transferring rows
+                +  ORM hydration (rows → objects)</code></pre>
+<table><thead><tr><th>Symptom</th><th>Likely cause</th></tr></thead><tbody><tr><td>Fast in <code>EXPLAIN</code>, slow in the app</td><td>Round trips, N+1, pool waits, huge result sets</td></tr><tr><td>Slow only under load</td><td>Pool exhaustion, lock contention, CPU saturation</td></tr><tr><td>Slow only sometimes</td><td>Cache misses, autovacuum, checkpoints, plan changes</td></tr><tr><td>Slow gets slower over time</td><td>Missing index on a growing table, bloat, offset pagination</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>02 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Database Performance</div><div class="num"><b>03</b> / 13</div></div>
+<h2>Measure First</h2><div class="body"><table><thead><tr><th>Tool</th><th>What it tells you</th></tr></thead><tbody><tr><td>APM / OpenTelemetry traces</td><td>Which endpoint and which query, with p95/p99 latency</td></tr><tr><td><code>pg_stat_statements</code></td><td>Total and mean time per normalized query</td></tr><tr><td>Slow query log</td><td>Every statement slower than a threshold</td></tr><tr><td><code>pg_stat_activity</code></td><td>What's running right now, and who is waiting on locks</td></tr><tr><td>MongoDB profiler / Atlas Performance Advisor</td><td>Slow operations and suggested indexes</td></tr></tbody></table>
+<pre><span class="lang">sql</span><code><span class="c">-- PostgreSQL: log statements slower than 200 ms</span>
+ALTER SYSTEM SET log_min_duration_statement = <span class="s">'200ms'</span>;
+SELECT pg_reload_conf();
+
+<span class="c">-- MySQL</span>
+SET GLOBAL slow_query_log = <span class="s">'ON'</span>;
+SET GLOBAL long_query_time = 0.2;</code></pre>
+<p>Track <strong>p95 and p99</strong>, not the average. The average hides the slow requests users actually notice.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>03 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Database Performance</div><div class="num"><b>04</b> / 13</div></div>
+<h2>Round Trips Add Up</h2><div class="body"><p>A query that takes 0.3 ms in the database still costs a full network round trip, often 1–5 ms across zones.</p>
+<pre><span class="lang">js</span><code><span class="c">// 3 sequential round trips</span>
+const user = await prisma.user.findUnique({ where: { id } });
+const posts = await prisma.post.findMany({ where: { authorId: id } });
+const count = await prisma.comment.count({ where: { authorId: id } });
+
+<span class="c">// Independent reads: run them concurrently</span>
+const [user2, posts2, count2] = await Promise.all([
+  prisma.user.findUnique({ where: { id } }),
+  prisma.post.findMany({ where: { authorId: id } }),
+  prisma.comment.count({ where: { authorId: id } }),
+]);
+
+<span class="c">// Or one query with nested relations</span>
+const profile = await prisma.user.findUnique({
+  where: { id },
+  include: { posts: true, _count: { select: { comments: true } } },
+});</code></pre>
+<p>Keep the application and database in the <strong>same region and zone</strong>.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>04 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Database Performance</div><div class="num"><b>05</b> / 13</div></div>
+<h2>Connections and Pooling</h2><div class="body"><p>Every PostgreSQL connection is a process using several MB of RAM. More connections than CPU cores mostly adds contention.</p>
+<table><thead><tr><th>Setup</th><th>Recommendation</th></tr></thead><tbody><tr><td>Long-running server</td><td>One ORM client per process; pool size ≈ a few per CPU core</td></tr><tr><td>Many app instances</td><td>Sum of all pools must stay under <code>max_connections</code></td></tr><tr><td>Serverless / edge</td><td>External pooler: PgBouncer (transaction mode), RDS Proxy, Prisma Accelerate</td></tr><tr><td>MongoDB</td><td>Driver pool per process (<code>maxPoolSize</code>, default 100)</td></tr></tbody></table>
+<p>A request waiting for a connection looks like a slow query in your traces. Check pool metrics before blaming the database. Details: Connection Pooling.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>05 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Database Performance</div><div class="num"><b>06</b> / 13</div></div>
+<h2>Reduce ORM Overhead on Hot Paths</h2><div class="body"><table><thead><tr><th>ORM</th><th>Lighter reads</th></tr></thead><tbody><tr><td>Prisma</td><td><code>select</code> only needed fields; <code>$queryRaw</code> / TypedSQL for heavy reports</td></tr><tr><td>Sequelize</td><td><code>raw: true</code> returns plain objects instead of model instances</td></tr><tr><td>Mongoose</td><td><code>.lean()</code> skips document hydration, getters and change tracking</td></tr><tr><td>TypeORM</td><td><code>getRawMany()</code> on the query builder</td></tr></tbody></table>
+<pre><span class="lang">js</span><code><span class="c">// Mongoose: plain objects, often several times faster for large lists</span>
+const posts = await Post.find({ published: true }).select(<span class="s">'title slug'</span>).lean();
+
+<span class="c">// Sequelize</span>
+const rows = await Post.findAll({ attributes: [<span class="s">'id'</span>, <span class="s">'title'</span>], raw: true });</code></pre>
+<p>The ORM itself is rarely the bottleneck. Measure before you rewrite with raw SQL.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>06 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Database Performance</div><div class="num"><b>07</b> / 13</div></div>
+<h2>Schema Design for Speed</h2><div class="body"><ul><li>Use the <strong>smallest correct type</strong>: <code>int</code> vs <code>bigint</code>, <code>timestamptz</code>, <code>numeric</code> for money, <code>uuid</code> (not <code>varchar(36)</code>).</li><li><strong>Normalize</strong> first. Denormalize a counter or a copied field only when a measured hot read needs it, and update it in the same transaction.</li><li>Keep wide, rarely read columns (large <code>TEXT</code>, blobs) in a separate table or object storage.</li><li>Prefer time-ordered IDs (UUIDv7, ULID, identity) over random UUIDv4 for large tables; random keys fragment B-tree indexes.</li><li>In MongoDB, <strong>embed</strong> what's read together and <strong>reference</strong> what grows without bound, keeping documents well below the 16 MB limit.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>07 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Database Performance</div><div class="num"><b>08</b> / 13</div></div>
+<h2>Scaling Reads: Replicas</h2><div class="body"><p>Send reads to replicas and writes to the primary.</p>
+<pre><span class="lang">js</span><code><span class="c">// Prisma</span>
+import { readReplicas } from <span class="s">'@prisma/extension-read-replicas'</span>;
+const prisma = new PrismaClient().$extends(readReplicas({ url: process.env.REPLICA_URL }));
+await prisma.post.findMany();                 <span class="c">// replica</span>
+await prisma.$primary().post.findMany();      <span class="c">// force primary</span>
+
+<span class="c">// Sequelize</span>
+const sequelize = new Sequelize(<span class="s">'blog'</span>, null, null, {
+  dialect: <span class="s">'postgres'</span>,
+  replication: {
+    read: [{ host: <span class="s">'replica-1'</span>, username: <span class="s">'app'</span>, password: process.env.DB_PASS }],
+    write: { host: <span class="s">'primary'</span>, username: <span class="s">'app'</span>, password: process.env.DB_PASS },
+  },
+});</code></pre>
+<p>Replicas lag behind the primary by milliseconds to seconds. Read from the <strong>primary right after a write</strong> when the user must see their own change.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>08 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Database Performance</div><div class="num"><b>09</b> / 13</div></div>
+<h2>Big Tables: Partitioning and Archiving</h2><div class="body"><pre><span class="lang">sql</span><code>CREATE TABLE events (
+  id         bigint GENERATED ALWAYS AS IDENTITY,
+  created_at timestamptz NOT NULL,
+  payload    jsonb
+) PARTITION BY RANGE (created_at);
+
+CREATE TABLE events_2026_09 PARTITION OF events
+  FOR VALUES FROM (<span class="s">'2026-09-01'</span>) TO (<span class="s">'2026-10-01'</span>);</code></pre>
+<ul><li>Queries that filter on the partition key read only the matching partitions (<strong>partition pruning</strong>).</li><li>Dropping an old partition is instant, unlike a huge <code>DELETE</code>.</li><li>Move cold data to an archive table or a warehouse, so the hot table and its indexes fit in memory.</li><li><strong>Sharding</strong> (splitting data across servers) is the last step. Citus, Vitess and MongoDB sharding do it, at a large operational cost.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>09 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Database Performance</div><div class="num"><b>10</b> / 13</div></div>
+<h2>Keep the Database Healthy</h2><div class="body"><table><thead><tr><th>Task</th><th>Why</th></tr></thead><tbody><tr><td>Autovacuum (PostgreSQL)</td><td>Removes dead row versions left by <code>UPDATE</code>/<code>DELETE</code>; prevents bloat and XID wraparound</td></tr><tr><td><code>ANALYZE</code> / fresh statistics</td><td>The planner picks good plans only with accurate row estimates</td></tr><tr><td>Memory sizing</td><td><code>shared_buffers</code> / <code>innodb_buffer_pool_size</code> should hold the hot data and indexes</td></tr><tr><td>Statement timeouts</td><td><code>statement_timeout</code>, <code>lock_timeout</code> stop one bad query from taking everything down</td></tr><tr><td>Monitor disk and I/O</td><td>A full disk or saturated IOPS stalls every query</td></tr></tbody></table>
+<pre><span class="lang">sql</span><code><span class="c">-- Per-role safety net for the application user</span>
+ALTER ROLE app SET statement_timeout = <span class="s">'5s'</span>;
+ALTER ROLE app SET idle_in_transaction_session_timeout = <span class="s">'30s'</span>;</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>10 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Database Performance</div><div class="num"><b>11</b> / 13</div></div>
+<h2>The Scaling Ladder</h2><div class="body"><p>Climb only as far as you need.</p>
+<table><thead><tr><th>Step</th><th>Effort</th></tr></thead><tbody><tr><td>1. Fix N+1 and over-fetching</td><td>Low</td></tr><tr><td>2. Add the right indexes</td><td>Low</td></tr><tr><td>3. Tune the pool, add timeouts</td><td>Low</td></tr><tr><td>4. Cache hot reads</td><td>Medium</td></tr><tr><td>5. Bigger instance (vertical scaling)</td><td>Low, costs money</td></tr><tr><td>6. Read replicas</td><td>Medium</td></tr><tr><td>7. Partition and archive</td><td>Medium–high</td></tr><tr><td>8. Shard</td><td>High</td></tr></tbody></table>
+<p>Most applications never need to go past step 6.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>11 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Database Performance</div><div class="num"><b>12</b> / 13</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li>Latency = <strong>pool wait + round trips + execution + transfer + hydration</strong>. Measure with APM, <code>pg_stat_statements</code> and the slow query log; watch <strong>p95/p99</strong>.</li><li>Cut <strong>round trips</strong>: batch, parallelize independent reads, eager load.</li><li>Size <strong>connection pools</strong> against <code>max_connections</code>; use PgBouncer or RDS Proxy for serverless.</li><li>Use <code>lean()</code>, <code>raw: true</code> and <code>select</code> on hot read paths.</li><li>Scale reads with <strong>replicas</strong> (mind replication lag), big tables with <strong>partitioning</strong>, and keep autovacuum, statistics and timeouts healthy.</li><li>Follow the <strong>scaling ladder</strong>: queries → indexes → pool → cache → bigger box → replicas → partitions → shards.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>12 / 13</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>13</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's Database <span class="g">Performance</span>.</h1><p class="src"><em>Sources: PostgreSQL Docs (monitoring, partitioning, vacuum), Prisma read replicas, Sequelize replication. Full list in <a href="references.html">references</a>.</em></p><div class="actions"><a class="btn primary" href="references.html">Next deck: References →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>13 / 13</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>

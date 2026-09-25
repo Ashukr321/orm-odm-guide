@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Concurrency · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 06 of 08</div><div class="num"><b>01</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1><span class="g">Concurrency</span></h1><div class="lead"><p>Two requests touching the same row at the same moment is normal in production. Without a plan, one of them silently overwrites the other.</p></div><div class="meta"><span><b>11</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>01 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Concurrency</div><div class="num"><b>02</b> / 13</div></div>
+<h2>The Race: Read-Modify-Write</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// Two requests withdraw 30 from a balance of 100 at the same time</span>
+const user = await prisma.user.findUnique({ where: { id } });        <span class="c">// both read 100</span>
+await prisma.user.update({ where: { id }, data: { balance: user.balance - 30 } });  <span class="c">// both write 70</span>
+<span class="c">// Expected 40, got 70: one withdrawal was lost</span></code></pre>
+<pre><code>Request A: read 100 ──────────── write 70
+Request B:      read 100 ──────────── write 70</code></pre>
+<p>A transaction alone doesn't fix this under Read Committed: both transactions read 100 and both commit. Use one of the four fixes below.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>02 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Concurrency</div><div class="num"><b>03</b> / 13</div></div>
+<h2>Fix 1: Atomic Updates</h2><div class="body"><p>Let the database do the arithmetic in one statement.</p>
+<pre><span class="lang">js</span><code><span class="c">// Prisma</span>
+await prisma.user.update({ where: { id }, data: { balance: { decrement: 30 } } });
+
+<span class="c">// Sequelize</span>
+await User.decrement(<span class="s">'balance'</span>, { by: 30, where: { id } });
+
+<span class="c">// Mongoose</span>
+await User.updateOne({ _id: id }, { $inc: { balance: -30 } });</code></pre>
+<pre><span class="lang">sql</span><code>UPDATE users SET balance = balance - 30 WHERE id = $1;</code></pre>
+<p>The row lock taken by <code>UPDATE</code> serializes the two writers. This is the simplest fix and works whenever the new value depends only on the old value.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>03 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Concurrency</div><div class="num"><b>04</b> / 13</div></div>
+<h2>Fix 2: Conditional Updates</h2><div class="body"><p>Put the business rule in the <code>WHERE</code> clause and check how many rows changed.</p>
+<pre><span class="lang">js</span><code><span class="c">// Prisma: updateMany returns { count }</span>
+const { count } = await prisma.user.updateMany({
+  where: { id, balance: { gte: 30 } },
+  data: { balance: { decrement: 30 } },
+});
+if (count === 0) throw new Error(<span class="s">'Insufficient funds'</span>);
+
+<span class="c">// Mongoose: findOneAndUpdate returns null if the filter didn't match</span>
+const user = await User.findOneAndUpdate(
+  { _id: id, balance: { $gte: 30 } },
+  { $inc: { balance: -30 } },
+  { new: true },
+);</code></pre>
+<p>Same pattern for inventory (<code>stock &gt;= qty</code>), seat booking (<code>seat_holder IS NULL</code>) and state machines (<code>status = 'pending'</code>).</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>04 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Concurrency</div><div class="num"><b>05</b> / 13</div></div>
+<h2>Fix 3: Optimistic Locking</h2><div class="body"><p>Add a <code>version</code> column. Every update checks the version it read and increments it. If someone else updated first, zero rows match and you retry or report a conflict.</p>
+<pre><span class="lang">js</span><code><span class="c">// Prisma: manual version check</span>
+const post = await prisma.post.findUnique({ where: { id } });
+const { count } = await prisma.post.updateMany({
+  where: { id, version: post.version },
+  data: { title: newTitle, version: { increment: 1 } },
+});
+if (count === 0) throw new ConflictError(<span class="s">'Post was changed by someone else'</span>);
+
+<span class="c">// Sequelize: built in</span>
+Post.init({ /* ... */ }, { sequelize, version: true });   <span class="c">// throws OptimisticLockError on conflict</span>
+
+<span class="c">// Mongoose: built in</span>
+const postSchema = new Schema({ /* ... */ }, { optimisticConcurrency: true });   <span class="c">// save() throws VersionError</span></code></pre>
+<p>Best for <strong>low contention</strong> and long "read, edit in a form, save" flows, where holding a lock for minutes isn't possible. HTTP can expose it with <code>ETag</code> / <code>If-Match</code>.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>05 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Concurrency · 1/2</div><div class="num"><b>06</b> / 13</div></div>
+<h2>Fix 4: Pessimistic Locking (<code>SELECT ... FOR UPDATE</code>)</h2><div class="body"><h4>Locking the Row</h4>
+<p>Lock the row when you read it, so other writers wait until you commit.</p>
+<pre><span class="lang">js</span><code><span class="c">// Prisma: raw SQL inside an interactive transaction</span>
+await prisma.$transaction(async (tx) =&gt; {
+  const [acct] = await tx.$queryRaw`SELECT id, balance FROM accounts WHERE id = ${id} FOR UPDATE`;
+  if (acct.balance &lt; amount) throw new Error(<span class="s">'Insufficient funds'</span>);
+  await tx.account.update({ where: { id }, data: { balance: acct.balance - amount } });
+});
+
+<span class="c">// Sequelize</span>
+await sequelize.transaction(async (t) =&gt; {
+  const acct = await Account.findByPk(id, { lock: t.LOCK.UPDATE, transaction: t });
+  <span class="c">// ... checks and update with { transaction: t }</span>
+});</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>06 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Concurrency · 2/2</div><div class="num"><b>07</b> / 13</div></div>
+<h2>Fix 4: Pessimistic Locking (<code>SELECT ... FOR UPDATE</code>)</h2><div class="body"><h4>Lock Variants</h4>
+<table><thead><tr><th>Clause</th><th>Behaviour</th></tr></thead><tbody><tr><td><code>FOR UPDATE</code></td><td>Wait for the lock</td></tr><tr><td><code>FOR UPDATE NOWAIT</code></td><td>Fail immediately if locked</td></tr><tr><td><code>FOR UPDATE SKIP LOCKED</code></td><td>Skip locked rows (job queues)</td></tr><tr><td><code>FOR SHARE</code></td><td>Others can read-lock too, but not write</td></tr></tbody></table>
+<p>Best for <strong>high contention</strong> and complex checks that span several rows.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>07 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Concurrency</div><div class="num"><b>08</b> / 13</div></div>
+<h2>Job Queues with <code>SKIP LOCKED</code></h2><div class="body"><p>Many workers can pull jobs from one table without picking the same row.</p>
+<pre><span class="lang">sql</span><code>UPDATE jobs SET status = <span class="s">'running'</span>, locked_at = now()
+ WHERE id = (
+   SELECT id FROM jobs
+    WHERE status = <span class="s">'queued'</span>
+    ORDER BY created_at
+    LIMIT 1
+    FOR UPDATE SKIP LOCKED
+ )
+RETURNING *;</code></pre>
+<p>This is how tools like <code>pg-boss</code> and Graphile Worker use PostgreSQL as a reliable queue.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>08 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Concurrency</div><div class="num"><b>09</b> / 13</div></div>
+<h2>Uniqueness Races: Let the Constraint Decide</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// Race: two sign-ups with the same email both pass the check</span>
+if (!(await prisma.user.findUnique({ where: { email } }))) {
+  await prisma.user.create({ data: { email } });
+}</code></pre>
+<p>Two requests can both see "no user" before either inserts. A <strong>unique constraint</strong> is the only reliable check.</p>
+<pre><span class="lang">js</span><code>try {
+  await prisma.user.create({ data: { email } });
+} catch (e) {
+  if (e.code === <span class="s">'P2002'</span>) throw new ConflictError(<span class="s">'Email already registered'</span>);   <span class="c">// unique violation</span>
+  throw e;
+}
+
+<span class="c">// Or an upsert when "create or update" is the intent</span>
+await prisma.user.upsert({ where: { email }, create: { email, name }, update: { name } });</code></pre>
+<p>Sequelize throws <code>UniqueConstraintError</code>; MongoDB returns error code <code>11000</code>.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>09 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Concurrency</div><div class="num"><b>10</b> / 13</div></div>
+<h2>Locks Outside Rows</h2><div class="body"><pre><span class="lang">sql</span><code><span class="c">-- PostgreSQL advisory lock: one cron run at a time, released at commit</span>
+SELECT pg_try_advisory_xact_lock(hashtext(<span class="s">'nightly-report'</span>));</code></pre>
+<ul><li><strong>Advisory locks</strong> coordinate work that isn't tied to a row (cron jobs, migrations, per-tenant imports).</li><li><strong>Redis locks</strong> (<code>SET key value NX PX 30000</code>) work across databases, but they expire. Always pair them with a database-level guard such as a conditional update or a fencing token.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>10 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Concurrency</div><div class="num"><b>11</b> / 13</div></div>
+<h2>Choosing a Strategy</h2><div class="body"><table><thead><tr><th>Situation</th><th>Use</th></tr></thead><tbody><tr><td>Counter, balance delta, stock decrement</td><td>Atomic update</td></tr><tr><td>Rule on the same row (<code>balance &gt;= x</code>, <code>status = 'pending'</code>)</td><td>Conditional update</td></tr><tr><td>User edits a record in a form; conflicts are rare</td><td>Optimistic locking (<code>version</code>)</td></tr><tr><td>Many writers on a hot row; checks span several rows</td><td><code>SELECT ... FOR UPDATE</code></td></tr><tr><td>Worker queue</td><td><code>FOR UPDATE SKIP LOCKED</code></td></tr><tr><td>"Must be unique"</td><td>Unique constraint + handle the error</td></tr><tr><td>Invariant across many rows (write skew)</td><td>Serializable isolation + retry</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>11 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Concurrency</div><div class="num"><b>12</b> / 13</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li><strong>Read-modify-write</strong> in application code loses updates, even inside a Read Committed transaction.</li><li>Prefer <strong>atomic</strong> (<code>increment</code>, <code>$inc</code>) and <strong>conditional</strong> updates; check the affected row count.</li><li><strong>Optimistic locking</strong> (<code>version</code> column) for low contention; <strong>pessimistic</strong> <code>SELECT ... FOR UPDATE</code> for high contention.</li><li><code>SKIP LOCKED</code> turns a table into a safe multi-worker queue.</li><li>Enforce uniqueness with a <strong>unique constraint</strong>, never check-then-insert.</li><li>Advisory and Redis locks coordinate jobs; back them with a database-level guard.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>12 / 13</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>13</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's <span class="g">Concurrency</span>.</h1><p class="src"><em>Sources: PostgreSQL explicit locking, Sequelize optimistic locking, Mongoose optimisticConcurrency, Prisma atomic operations. Full list in <a href="references.html">references</a>.</em></p><div class="actions"><a class="btn primary" href="07-database-performance.html">Next deck: Database Performance →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Advanced</div><div>13 / 13</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>
