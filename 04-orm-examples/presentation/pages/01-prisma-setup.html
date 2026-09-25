@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prisma Setup · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 01 of 12</div><div class="num"><b>01</b> / 18</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1><span class="g">Prisma</span> Setup</h1><div class="lead"><p>From an empty folder to a typed Prisma 7 client talking to PostgreSQL: config, driver adapter, first migration, seeding.</p></div>
+<div class="meta"><span><b>16</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>01 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup</div><div class="num"><b>02</b> / 18</div></div>
+<h2>What You'll Build</h2><div class="body"><p>A Node.js + TypeScript project connected to <strong>PostgreSQL</strong> through Prisma. Every Prisma page in this guide uses the same blog domain:</p>
+<pre><code>User ──1:1── Profile
+  │
+  └──1:N── Post ──M:N── Tag</code></pre>
+<blockquote>Examples target <strong>Prisma 7</strong>. Differences from Prisma 5/6 are called out in Older Prisma Versions.</blockquote></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>02 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup</div><div class="num"><b>03</b> / 18</div></div>
+<h2>Prerequisites</h2><div class="body"><table><thead><tr><th>Tool</th><th>Version</th></tr></thead><tbody><tr><td>Node.js</td><td>20.19+ (LTS)</td></tr><tr><td>PostgreSQL</td><td>14+ (local, Docker, or a hosted DB)</td></tr><tr><td>npm / pnpm</td><td>Any recent version</td></tr></tbody></table>
+<p><strong>Start Postgres with Docker (optional):</strong></p>
+<pre><span class="lang">bash</span><code>docker run --name blog-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=blog -p 5432:5432 -d postgres:16</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>03 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup</div><div class="num"><b>04</b> / 18</div></div>
+<h2>1. Create the Project</h2><div class="body"><pre><span class="lang">bash</span><code>mkdir prisma-blog &amp;&amp; cd prisma-blog
+npm init -y
+npm install -D typescript tsx @types/node prisma
+npm install @prisma/client @prisma/adapter-pg pg dotenv
+npx tsc --init</code></pre>
+<table><thead><tr><th>Package</th><th>Role</th></tr></thead><tbody><tr><td><code>prisma</code> (dev)</td><td>CLI: <code>init</code>, <code>migrate</code>, <code>generate</code>, <code>studio</code></td></tr><tr><td><code>@prisma/client</code></td><td>Runtime used by the generated client</td></tr><tr><td><code>@prisma/adapter-pg</code> + <code>pg</code></td><td>Driver adapter: Prisma sends queries through the <code>pg</code> driver</td></tr><tr><td><code>dotenv</code></td><td>Loads <code>.env</code> (Prisma 7 no longer loads it automatically)</td></tr><tr><td><code>tsx</code></td><td>Runs TypeScript files directly</td></tr></tbody></table>
+<p>Set <code>"type": "module"</code> in <code>package.json</code>. Prisma 7's generated client is ESM.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>04 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup</div><div class="num"><b>05</b> / 18</div></div>
+<h2>2. Initialize Prisma</h2><div class="body"><pre><span class="lang">bash</span><code>npx prisma init --datasource-provider postgresql --output ../src/generated/prisma</code></pre>
+<p>This creates:</p>
+<pre><code>prisma-blog/
+├── prisma/
+│   └── schema.prisma      ← models, generator, datasource
+├── prisma.config.ts       ← CLI config: schema path, migrations, DB URL
+├── .env                   ← DATABASE_URL
+└── package.json</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>05 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup · 1/2</div><div class="num"><b>06</b> / 18</div></div>
+<h2>3. Configure the Connection</h2><div class="body"><p><strong>.env</strong></p>
+<pre><span class="lang">bash</span><code>DATABASE_URL=<span class="s">"postgresql://postgres:postgres@localhost:5432/blog?schema=public"</span></code></pre>
+<p>Format: <code>postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=SCHEMA</code>. Add <code>.env</code> to <code>.gitignore</code>.</p>
+<p><strong>prisma.config.ts</strong></p>
+<pre><span class="lang">ts</span><code>import <span class="s">'dotenv/config'</span>;
+import { defineConfig, env } from <span class="s">'prisma/config'</span>;
+
+export default defineConfig({
+  schema: <span class="s">'prisma/schema.prisma'</span>,
+  migrations: {
+    path: <span class="s">'prisma/migrations'</span>,
+    seed: <span class="s">'tsx prisma/seed.ts'</span>,
+  },
+  datasource: {
+    url: env(<span class="s">'DATABASE_URL'</span>),
+  },
+});</code></pre>
+<p><strong>prisma/schema.prisma</strong></p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>06 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup · 2/2</div><div class="num"><b>07</b> / 18</div></div>
+<h2>3. Configure the Connection</h2><div class="body"><pre><span class="lang">prisma</span><code>generator client {
+  provider = <span class="s">"prisma-client"</span>
+  output   = <span class="s">"../src/generated/prisma"</span>
+}
+
+datasource db {
+  provider = <span class="s">"postgresql"</span>
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+}</code></pre>
+<p>The full blog schema is in Schema.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>07 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup</div><div class="num"><b>08</b> / 18</div></div>
+<h2>4. Create the Tables (First Migration)</h2><div class="body"><pre><span class="lang">bash</span><code>npx prisma migrate dev --name init
+npx prisma generate</code></pre>
+<ul><li><code>migrate dev</code> compares the schema with the DB, writes <code>prisma/migrations/&lt;timestamp&gt;_init/migration.sql</code> and applies it.</li><li><code>generate</code> writes the typed client to <code>src/generated/prisma</code>. Run it again after <strong>every</strong> schema change. (In Prisma 7, <code>migrate dev</code> no longer runs it for you.)</li></ul>
+<p>Add the generated folder to <code>.gitignore</code>:</p>
+<pre><code>src/generated/</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>08 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup · 1/2</div><div class="num"><b>09</b> / 18</div></div>
+<h2>5. Create a Single Prisma Client</h2><div class="body"><p>Create <strong>one</strong> client for the whole app. Each client has its own connection pool, so creating one per request exhausts DB connections.</p>
+<p><strong>src/db.ts</strong></p>
+<pre><span class="lang">ts</span><code>import <span class="s">'dotenv/config'</span>;
+import { PrismaPg } from <span class="s">'@prisma/adapter-pg'</span>;
+import { PrismaClient } from <span class="s">'./generated/prisma/client.js'</span>;
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+
+export const prisma = new PrismaClient({
+  adapter,
+  log: process.env.NODE_ENV === <span class="s">'development'</span> ? [<span class="s">'query'</span>, <span class="s">'warn'</span>, <span class="s">'error'</span>] : [<span class="s">'error'</span>],
+});</code></pre>
+<p><strong>Hot-reload safe version</strong> (Next.js / nodemon reload modules and would create a new client on every reload):</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>09 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup · 2/2</div><div class="num"><b>10</b> / 18</div></div>
+<h2>5. Create a Single Prisma Client</h2><div class="body"><pre><span class="lang">ts</span><code>const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+
+export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
+
+if (process.env.NODE_ENV !== <span class="s">'production'</span>) globalForPrisma.prisma = prisma;</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>10 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup · 1/2</div><div class="num"><b>11</b> / 18</div></div>
+<h2>6. First Query</h2><div class="body"><p><strong>src/index.ts</strong></p>
+<pre><span class="lang">ts</span><code>import { prisma } from <span class="s">'./db.js'</span>;
+
+async function main() {
+  const user = await prisma.user.create({
+    data: { email: <span class="s">'ashu@example.com'</span>, name: <span class="s">'Ashu'</span> },
+  });
+  console.log(<span class="s">'Created:'</span>, user);
+
+  const users = await prisma.user.findMany();
+  console.log(<span class="s">'All users:'</span>, users);
+}
+
+main()
+  .catch((e) =&gt; {
+    console.error(e);
+    process.exitCode = 1;
+  })
+  .finally(() =&gt; prisma.$disconnect());</code></pre>
+<pre><span class="lang">bash</span><code>npx tsx src/index.ts</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>11 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup · 2/2</div><div class="num"><b>12</b> / 18</div></div>
+<h2>6. First Query</h2><div class="body"><pre><code>prisma:query INSERT INTO "public"."User" ("email","name","createdAt") VALUES ($1,$2,$3) RETURNING ...
+Created: { id: 1, email: 'ashu@example.com', name: 'Ashu', createdAt: 2026-09-25T... }</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>12 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup</div><div class="num"><b>13</b> / 18</div></div>
+<h2>7. Seed Data</h2><div class="body"><p><strong>prisma/seed.ts</strong></p>
+<pre><span class="lang">ts</span><code>import { prisma } from <span class="s">'../src/db.js'</span>;
+
+await prisma.user.upsert({
+  where: { email: <span class="s">'admin@example.com'</span> },
+  update: {},
+  create: { email: <span class="s">'admin@example.com'</span>, name: <span class="s">'Admin'</span> },
+});
+
+await prisma.$disconnect();</code></pre>
+<pre><span class="lang">bash</span><code>npx prisma db seed</code></pre>
+<p><code>upsert</code> makes the seed <strong>idempotent</strong>, so running it twice is safe.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>13 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup</div><div class="num"><b>14</b> / 18</div></div>
+<h2>8. Useful Scripts</h2><div class="body"><pre><span class="lang">json</span><code>{
+  <span class="s">"scripts"</span>: {
+    <span class="s">"dev"</span>: <span class="s">"tsx watch src/index.ts"</span>,
+    <span class="s">"db:migrate"</span>: <span class="s">"prisma migrate dev"</span>,
+    <span class="s">"db:deploy"</span>: <span class="s">"prisma migrate deploy"</span>,
+    <span class="s">"db:generate"</span>: <span class="s">"prisma generate"</span>,
+    <span class="s">"db:seed"</span>: <span class="s">"prisma db seed"</span>,
+    <span class="s">"db:studio"</span>: <span class="s">"prisma studio"</span>,
+    <span class="s">"postinstall"</span>: <span class="s">"prisma generate"</span>
+  }
+}</code></pre>
+<table><thead><tr><th>Command</th><th>When</th></tr></thead><tbody><tr><td><code>prisma migrate dev</code></td><td>Local: create + apply a migration</td></tr><tr><td><code>prisma migrate deploy</code></td><td>CI / production: apply pending migrations only</td></tr><tr><td><code>prisma migrate reset</code></td><td>Local: drop DB, re-apply all migrations, re-seed</td></tr><tr><td><code>prisma db push</code></td><td>Prototyping: sync schema without a migration file</td></tr><tr><td><code>prisma db pull</code></td><td>Existing DB: generate models from tables</td></tr><tr><td><code>prisma studio</code></td><td>Browse and edit data in a web UI</td></tr><tr><td><code>prisma format</code> / <code>validate</code></td><td>Format / check <code>schema.prisma</code></td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>14 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup</div><div class="num"><b>15</b> / 18</div></div>
+<h2>Older Prisma Versions (5/6)</h2><div class="body"><table><thead><tr><th></th><th>Prisma 5/6</th><th>Prisma 7</th></tr></thead><tbody><tr><td>Generator</td><td><code>provider = "prisma-client-js"</code></td><td><code>provider = "prisma-client"</code> + required <code>output</code></td></tr><tr><td>DB URL</td><td><code>url = env("DATABASE_URL")</code> in <code>schema.prisma</code></td><td><code>datasource.url</code> in <code>prisma.config.ts</code></td></tr><tr><td>Import</td><td><code>import { PrismaClient } from '@prisma/client'</code></td><td>From your <code>output</code> path</td></tr><tr><td>Driver</td><td>Built-in Rust engine</td><td>Driver adapter (<code>@prisma/adapter-pg</code>)</td></tr><tr><td><code>.env</code></td><td>Loaded automatically</td><td>Load with <code>dotenv</code></td></tr><tr><td><code>migrate dev</code></td><td>Also runs <code>generate</code> and seed</td><td>Run <code>generate</code> / <code>db seed</code> yourself</td></tr></tbody></table>
+<p>The query API (<code>findMany</code>, <code>create</code>, <code>include</code>, <code>$transaction</code>, …) is the same, so every other page in this guide applies to both.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>15 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup</div><div class="num"><b>16</b> / 18</div></div>
+<h2>Common Setup Errors</h2><div class="body"><table><thead><tr><th>Error</th><th>Fix</th></tr></thead><tbody><tr><td><code>P1001: Can't reach database server</code></td><td>DB not running, or wrong host/port in <code>DATABASE_URL</code></td></tr><tr><td><code>P1000: Authentication failed</code></td><td>Wrong user/password</td></tr><tr><td><code>Cannot find module './generated/prisma/client'</code></td><td>Run <code>npx prisma generate</code></td></tr><tr><td>Types don't match the schema</td><td>Run <code>npx prisma generate</code> after editing the schema</td></tr><tr><td><code>Too many connections</code></td><td>You create <code>new PrismaClient()</code> in many places; use one shared client</td></tr><tr><td><code>DATABASE_URL</code> is undefined</td><td>Add <code>import 'dotenv/config'</code></td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>16 / 18</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma Setup</div><div class="num"><b>17</b> / 18</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li>Install <code>prisma</code> (CLI) and <code>@prisma/client</code>, plus a <strong>driver adapter</strong> (<code>@prisma/adapter-pg</code> + <code>pg</code>) in Prisma 7.</li><li><code>schema.prisma</code> holds the models; <code>prisma.config.ts</code> holds the DB URL and migration settings.</li><li>The workflow: **edit schema → <code>migrate dev</code> → <code>generate</code> → use the typed client**.</li><li>Use **one shared <code>PrismaClient</code>**, since each client owns a connection pool.</li><li>Use <code>migrate deploy</code> in production and <code>db push</code> only for prototyping.</li></ul>
+<p>Next: Schema</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>17 / 18</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>18</b> / 18</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's <span class="g">Prisma</span> Setup.</h1><p class="src"><em>Sources: Prisma Docs (getting started, Prisma Config, upgrade to v7). Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="02-prisma-schema.html">Next deck: The Prisma Schema →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Examples</div><div>18 / 18</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>

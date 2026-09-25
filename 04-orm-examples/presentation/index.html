@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ORM Examples Presentation · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+body{min-height:100vh;background:radial-gradient(circle at 85% 0%,rgba(249,115,22,.14),transparent 40%),radial-gradient(circle at 0% 100%,rgba(59,130,246,.1),transparent 40%),var(--bg);background-attachment:fixed}
+.wrap{max-width:1180px;margin:0 auto;padding:56px 24px 80px}
+header .brand{font-weight:800;font-size:20px}header .brand span{color:var(--accent-primary)}
+.kicker{font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);margin-top:56px}
+h1{font-size:clamp(44px,7vw,84px);font-weight:900;letter-spacing:-2.5px;line-height:1.02;margin-top:14px}
+h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:20px;line-height:1.55;color:var(--text-secondary);max-width:760px;margin-top:20px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.btn{font-family:var(--mono);font-size:15px;font-weight:800;text-decoration:none;padding:14px 22px;border-radius:12px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+h2{font-size:30px;font-weight:900;letter-spacing:-.8px;margin-top:72px}
+.sub{color:var(--text-muted);margin-top:6px;font-size:16px}
+.decks{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-top:24px}
+.card{display:flex;gap:18px;text-decoration:none;color:inherit;padding:24px;border-radius:18px;border:1px solid var(--border);background:var(--surface);transition:border-color .15s,transform .15s}
+.card:hover,.card:focus-visible{border-color:rgba(251,146,60,.5);transform:translateY(-2px);outline:none}
+.cn{font-family:var(--mono);font-size:22px;font-weight:800;color:var(--accent-primary)}
+.card h3{font-size:21px;font-weight:800}.card p{color:var(--text-secondary);font-size:15.5px;line-height:1.5;margin-top:6px}
+.cm{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--accent-secondary)}
+.viewer{margin-top:24px;display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:28px;align-items:start}
+.frame{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--border);aspect-ratio:1080/1350;background:var(--code-bg)}
+.frame img{width:100%;height:100%;display:block}
+.nav{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+.nav button{font-family:var(--mono);font-size:16px;font-weight:800;color:var(--text-primary);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 18px;cursor:pointer}
+.nav .count{font-family:var(--mono);color:var(--text-secondary)}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px}
+.th{border:2px solid transparent;border-radius:10px;overflow:hidden;padding:0;background:none;cursor:pointer;aspect-ratio:1080/1350;opacity:.6;transition:opacity .15s}
+.th img{width:100%;height:100%;display:block}.th.on{border-color:var(--accent-primary);opacity:1}.th:hover{opacity:1}
+button:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+details{margin-top:22px;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+summary{cursor:pointer;padding:14px 18px;font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent-primary)}
+details pre{white-space:pre-wrap;padding:0 18px 18px;font-family:var(--sans);font-size:15px;line-height:1.6;color:var(--text-secondary)}
+footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--text-muted);font-size:14px}
+@media (max-width:760px){.viewer{grid-template-columns:1fr}.wrap{padding:32px 16px 60px}}
+</style></head>
+<body><div class="wrap">
+<header><div class="brand">devflow<span>_</span>ai</div></header>
+<div class="kicker">Backend Fundamentals · Presentation</div>
+<h1>ORM Examples: <span class="g">Prisma &amp; Sequelize</span></h1>
+<p class="lead">Hands-on Prisma 7 and Sequelize v6 on PostgreSQL, using one blog domain (User, Profile, Post, Tag) so you can compare them deck by deck: setup, schema and models, CRUD, relationships, advanced queries and transactions. 12 slide decks built from the notes.</p>
+<div class="cta"><a class="btn primary" href="pages/01-prisma-setup.html">▶ Start presentation</a><a class="btn" href="../README.md">Read the notes</a></div>
+
+<h2>Prisma</h2><p class="sub">Schema-first, generated typed client. Use ← → or swipe to move, F for fullscreen.</p>
+<div class="decks"><a class="card" href="pages/01-prisma-setup.html"><div class="cn">01</div><div><h3>Prisma Setup</h3><p>Install, prisma.config.ts, driver adapter, shared client, first migration, seeding and scripts.</p><span class="cm">16 slides →</span></div></a>
+<a class="card" href="pages/02-prisma-schema.html"><div class="cn">02</div><div><h3>The Prisma Schema</h3><p>The full blog schema, scalar types, attributes, naming, generated SQL and safe renames.</p><span class="cm">14 slides →</span></div></a>
+<a class="card" href="pages/03-prisma-crud.html"><div class="cn">03</div><div><h3>Prisma CRUD</h3><p>create/find/update/delete, filter operators, pagination, P2002/P2025, an Express router.</p><span class="cm">15 slides →</span></div></a>
+<a class="card" href="pages/04-prisma-relationships.html"><div class="cn">04</div><div><h3>Prisma Relationships</h3><p>1:1, 1:N, implicit and explicit M:N, include/select, some/every/none, nested writes.</p><span class="cm">18 slides →</span></div></a>
+<a class="card" href="pages/05-prisma-advanced-queries.html"><div class="cn">05</div><div><h3>Prisma Advanced Queries</h3><p>Cursor pagination, aggregate/groupBy, $queryRaw, full-text search, client extensions.</p><span class="cm">18 slides →</span></div></a>
+<a class="card" href="pages/06-prisma-transactions.html"><div class="cn">06</div><div><h3>Prisma Transactions</h3><p>Batch vs interactive $transaction, isolation, P2034 retries, optimistic and pessimistic locking.</p><span class="cm">14 slides →</span></div></a></div>
+
+<h2>Sequelize</h2><p class="sub">Active Record, JavaScript-first.</p>
+<div class="decks"><a class="card" href="pages/07-sequelize-setup.html"><div class="cn">07</div><div><h3>Sequelize Setup</h3><p>.sequelizerc, config.js, models/index.js, sync vs migrations, pool, CLI commands.</p><span class="cm">15 slides →</span></div></a>
+<a class="card" href="pages/08-sequelize-models.html"><div class="cn">08</div><div><h3>Sequelize Models</h3><p>Model classes, data types, validation, hooks, scopes, paranoid, matching migrations.</p><span class="cm">19 slides →</span></div></a>
+<a class="card" href="pages/09-sequelize-crud.html"><div class="cn">09</div><div><h3>Sequelize CRUD</h3><p>create/bulkCreate, findAll with Op, findAndCountAll, save vs update, destroy/restore, errors.</p><span class="cm">14 slides →</span></div></a>
+<a class="card" href="pages/10-sequelize-relationships.html"><div class="cn">10</div><div><h3>Sequelize Relationships</h3><p>The four associations, join tables, mixins, include/required/separate, avoiding N+1.</p><span class="cm">15 slides →</span></div></a>
+<a class="card" href="pages/11-sequelize-transactions.html"><div class="cn">11</div><div><h3>Sequelize Transactions</h3><p>Managed vs unmanaged, CLS, isolation and retries, FOR UPDATE / SKIP LOCKED, version: true.</p><span class="cm">14 slides →</span></div></a></div>
+
+<h2>Sources</h2>
+<div class="decks"><a class="card" href="pages/references.html"><div class="cn">12</div><div><h3>References</h3><p>Every source behind this presentation, organized by topic.</p><span class="cm">6 slides →</span></div></a></div>
+
+<details><summary>Key takeaways</summary><pre>Same domain, two ORMs.
+
+Key takeaways:
+• Prisma: edit schema.prisma → migrate dev → generate → use the typed client. One shared PrismaClient.
+• Sequelize: models + hand-written migrations; models/index.js wires up associations. One Sequelize instance.
+• Relations: include (Prisma) / include + required + separate (Sequelize). Never load relations in a loop (N+1).
+• Transactions: Prisma interactive $transaction(async tx =&gt; …); Sequelize managed transaction + { transaction: t } on every query.
+• Concurrency: atomic increment, optimistic version checks, or SELECT … FOR UPDATE.</pre></details>
+
+<footer><span>devflow_ai · <a href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">instagram.com/devflow_ai</a></span><span>Sources: <a href="pages/references.html">references deck</a></span></footer>
+</div></body></html>

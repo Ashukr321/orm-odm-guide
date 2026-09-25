@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Relationships · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 03 of 11</div><div class="num"><b>01</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1><span class="g">Relationships</span>: 1:1, 1:N, M:N</h1><div class="lead"><p>How tables point at each other, and how Prisma, Sequelize and TypeORM model the three relationship types.</p></div>
+<div class="meta"><span><b>11</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>01 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Relationships</div><div class="num"><b>02</b> / 13</div></div>
+<h2>The Three Relationship Types</h2><div class="body"><table><thead><tr><th>Type</th><th>Example</th><th>Where the foreign key lives</th></tr></thead><tbody><tr><td><strong>One-to-one (1:1)</strong></td><td>User ↔ Profile</td><td>On one side, with <code>UNIQUE</code> (<code>profiles.user_id UNIQUE</code>)</td></tr><tr><td><strong>One-to-many (1:N)</strong></td><td>User → Posts</td><td>On the "many" side (<code>posts.author_id</code>)</td></tr><tr><td><strong>Many-to-many (M:N)</strong></td><td>Posts ↔ Tags</td><td>In a <strong>join table</strong> (<code>post_tags.post_id</code>, <code>post_tags.tag_id</code>)</td></tr></tbody></table>
+<p>The side that holds the foreign key is called the <strong>owning side</strong>. The other side is the <strong>inverse side</strong>: it has a relation field in code, but no column in its table.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>02 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Relationships · 1/2</div><div class="num"><b>03</b> / 13</div></div>
+<h2>Relationships in Prisma</h2><div class="body"><pre><span class="lang">prisma</span><code>model User {
+  id      Int      @id @default(autoincrement())
+  profile Profile?                      <span class="c">// 1:1, inverse side</span>
+  posts   Post[]                        <span class="c">// 1:N, inverse side</span>
+}
+
+model Profile {
+  id     Int  @id @default(autoincrement())
+  bio    String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @unique                   <span class="c">// @unique makes it 1:1</span>
+}
+
+model Post {
+  id       Int   @id @default(autoincrement())
+  author   User  @relation(fields: [authorId], references: [id])
+  authorId Int                          <span class="c">// FK: the owning side</span>
+  tags     Tag[]                        <span class="c">// M:N, implicit join table</span>
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  posts Post[]
+}</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>03 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Relationships · 2/2</div><div class="num"><b>04</b> / 13</div></div>
+<h2>Relationships in Prisma</h2><div class="body"><p>Prisma creates the M:N join table (<code>_PostToTag</code>) for you. That is called an <strong>implicit</strong> many-to-many.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>04 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Relationships</div><div class="num"><b>05</b> / 13</div></div>
+<h2>Explicit Join Tables (M:N With Extra Data)</h2><div class="body"><p>When the relationship itself has data (who added the tag, when, a quantity, a role), model the join table explicitly:</p>
+<pre><span class="lang">prisma</span><code>model PostTag {
+  post    Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId  Int
+  tag     Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId   Int
+  addedAt DateTime @default(now())
+  addedBy Int
+
+  @@id([postId, tagId])                 <span class="c">// composite primary key</span>
+}</code></pre>
+<blockquote>Rule of thumb: start explicit when you <em>might</em> need extra columns later. Converting an implicit join table into an explicit one means a data migration.</blockquote></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>05 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Relationships · 1/2</div><div class="num"><b>06</b> / 13</div></div>
+<h2>Relationships in Sequelize and TypeORM</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// Sequelize: declare both sides</span>
+User.hasOne(Profile, { foreignKey: <span class="s">'userId'</span> });
+Profile.belongsTo(User, { foreignKey: <span class="s">'userId'</span> });
+
+User.hasMany(Post, { foreignKey: <span class="s">'authorId'</span>, as: <span class="s">'posts'</span> });
+Post.belongsTo(User, { foreignKey: <span class="s">'authorId'</span>, as: <span class="s">'author'</span> });
+
+Post.belongsToMany(Tag, { through: <span class="s">'post_tags'</span> });
+Tag.belongsToMany(Post, { through: <span class="s">'post_tags'</span> });</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>06 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Relationships · 2/2</div><div class="num"><b>07</b> / 13</div></div>
+<h2>Relationships in Sequelize and TypeORM</h2><div class="body"><pre><span class="lang">ts</span><code><span class="c">// TypeORM</span>
+@Entity() export class Post {
+  @ManyToOne(() =&gt; User, (user) =&gt; user.posts, { onDelete: <span class="s">'CASCADE'</span> })
+  author: User;                                   <span class="c">// owning side: author_id column</span>
+
+  @ManyToMany(() =&gt; Tag, (tag) =&gt; tag.posts)
+  @JoinTable({ name: <span class="s">'post_tags'</span> })               <span class="c">// owning side of the M:N</span>
+  tags: Tag[];
+}
+
+@Entity() export class User {
+  @OneToMany(() =&gt; Post, (post) =&gt; post.author)
+  posts: Post[];                                  <span class="c">// inverse side: no column</span>
+}</code></pre>
+<p>In Sequelize, <code>belongsTo</code> is the side with the foreign key. <code>hasOne</code> and <code>hasMany</code> describe the inverse side.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>07 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Relationships</div><div class="num"><b>08</b> / 13</div></div>
+<h2>Self-Relations</h2><div class="body"><p>A table that references <strong>itself</strong>: employees and managers, comment replies, category trees, followers.</p>
+<pre><span class="lang">prisma</span><code>model Employee {
+  id        Int        @id @default(autoincrement())
+  name      String
+  managerId Int?
+  manager   Employee?  @relation(<span class="s">"Management"</span>, fields: [managerId], references: [id])
+  reports   Employee[] @relation(<span class="s">"Management"</span>)
+}
+
+model User {
+  id         Int    @id @default(autoincrement())
+  followers  User[] @relation(<span class="s">"Follows"</span>)
+  following  User[] @relation(<span class="s">"Follows"</span>)          <span class="c">// M:N self-relation</span>
+}</code></pre>
+<p>Relation names (<code>"Management"</code>, <code>"Follows"</code>) tell Prisma which two fields belong together.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>08 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Relationships</div><div class="num"><b>09</b> / 13</div></div>
+<h2>Referential Actions: What Happens on Delete</h2><div class="body"><table><thead><tr><th>Action</th><th>When the parent row is deleted</th><th>Use for</th></tr></thead><tbody><tr><td><code>Restrict</code> / <code>NoAction</code></td><td>The delete fails while children exist</td><td>Most relations (users with orders)</td></tr><tr><td><code>Cascade</code></td><td>The children are deleted too</td><td>Children that mean nothing alone (profile, order items)</td></tr><tr><td><code>SetNull</code></td><td>The child's FK becomes <code>NULL</code></td><td>Optional links (post's editor left the company)</td></tr></tbody></table>
+<pre><span class="lang">prisma</span><code>user User @relation(fields: [userId], references: [id], onDelete: Cascade)</code></pre>
+<blockquote>Choose per relation. <code>Cascade</code> everywhere turns one accidental delete into a mass deletion.</blockquote></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>09 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Relationships</div><div class="num"><b>10</b> / 13</div></div>
+<h2>Querying and Writing Relations</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// Read with relations</span>
+const post = await prisma.post.findUnique({
+  where: { id: 1 },
+  include: { author: true, tags: true },
+});
+
+<span class="c">// Filter by a relation: users who have at least one published post</span>
+await prisma.user.findMany({ where: { posts: { some: { published: true } } } });
+
+<span class="c">// Nested write: create a post, connect an existing author, create or connect tags</span>
+await prisma.post.create({
+  data: {
+    title: <span class="s">'Relations 101'</span>,
+    author: { connect: { id: 1 } },
+    tags: {
+      connectOrCreate: [{ where: { name: <span class="s">'orm'</span> }, create: { name: <span class="s">'orm'</span> } }],
+    },
+  },
+});</code></pre>
+<p>Nested writes run in <strong>one transaction</strong>, so either everything is created or nothing is.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>10 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Relationships</div><div class="num"><b>11</b> / 13</div></div>
+<h2>Common Mistakes</h2><div class="body"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Forgetting <code>@unique</code> on a 1:1 foreign key</td><td>Without it, the database allows 1:N</td></tr><tr><td>Implicit M:N when the link needs data</td><td>An explicit join table model</td></tr><tr><td><code>Cascade</code> on every relation</td><td>Decide per relation; default to <code>Restrict</code></td></tr><tr><td>No index on the FK column (PostgreSQL)</td><td>Index it; PostgreSQL doesn't do it automatically</td></tr><tr><td>Declaring only one side in Sequelize</td><td>Declare both (<code>hasMany</code> + <code>belongsTo</code>) to query from both sides</td></tr><tr><td>Polymorphic "<code>commentable_type</code> + <code>commentable_id</code>"</td><td>No real FK is possible; prefer separate FK columns or separate tables</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>11 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Relationships</div><div class="num"><b>12</b> / 13</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li>Three types: <strong>1:1</strong> (FK + <code>UNIQUE</code>), <strong>1:N</strong> (FK on the many side), <strong>M:N</strong> (join table).</li><li>The <strong>owning side</strong> holds the FK; the <strong>inverse side</strong> is a virtual field in code.</li><li>Use an <strong>explicit join table</strong> when the relationship has its own data.</li><li><strong>Self-relations</strong> model trees, hierarchies and follower graphs.</li><li>Pick <strong>referential actions</strong> (<code>Restrict</code>, <code>Cascade</code>, <code>SetNull</code>) per relation, on purpose.</li><li>Nested writes (<code>connect</code>, <code>create</code>, <code>connectOrCreate</code>) run in one transaction.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>12 / 13</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>13</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's <span class="g">Relationships</span>.</h1><p class="src"><em>Sources: Prisma Docs (relations), Sequelize Docs (associations), TypeORM Docs (relations). Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="04-joins.html">Next deck: Joins →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>13 / 13</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>

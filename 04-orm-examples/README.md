@@ -1,5 +1,8 @@
 ## ORM Examples
 
+Hands-on guides for Prisma and Sequelize. Both use the same blog domain
+(User, Profile, Post, Tag) with PostgreSQL, so you can compare them page by page.
+
 ### Prisma
 
 | Topic | File |

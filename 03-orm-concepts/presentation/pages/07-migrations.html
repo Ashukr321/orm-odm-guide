@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Migrations · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 07 of 11</div><div class="num"><b>01</b> / 12</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1><span class="g">Migrations</span></h1><div class="lead"><p>Change the schema safely, in order, in every environment, without taking production down.</p></div>
+<div class="meta"><span><b>10</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>01 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Migrations</div><div class="num"><b>02</b> / 12</div></div>
+<h2>What Is a Migration</h2><div class="body"><p>A <strong>migration</strong> is a versioned file that changes the database schema from one state to the next: create a table, add a column, add an index. The files are committed to git and applied <strong>in order</strong>, so every environment (your laptop, CI, staging, production) ends up with the same schema.</p>
+<pre><code>migrations/
+  20260901_create_users/migration.sql
+  20260910_add_posts/migration.sql
+  20260925_add_user_phone/migration.sql     ← newest</code></pre>
+<p>The database keeps a <strong>migrations table</strong> (<code>_prisma_migrations</code>, <code>SequelizeMeta</code>, <code>migrations</code>) recording which files have already run, so each one runs <strong>exactly once</strong>.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>02 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Migrations</div><div class="num"><b>03</b> / 12</div></div>
+<h2>Why Not Just Edit the Database by Hand?</h2><div class="body"><table><thead><tr><th>By hand</th><th>With migrations</th></tr></thead><tbody><tr><td>"Did anyone add that column on staging?"</td><td>Every change is in git, with an author and a review</td></tr><tr><td>Each environment drifts</td><td>Every environment follows the same ordered history</td></tr><tr><td>New developers copy a dump from someone</td><td><code>migrate</code> builds the schema from zero</td></tr><tr><td>Rolling back means guessing</td><td>The previous state is a known version</td></tr><tr><td>Deploys break because the schema doesn't match the code</td><td>Migrations run as a deploy step, before the new code</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>03 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Migrations</div><div class="num"><b>04</b> / 12</div></div>
+<h2>Prisma Migrate</h2><div class="body"><pre><span class="lang">bash</span><code><span class="c"># 1. Edit schema.prisma (e.g. add `phone String?` to User), then:</span>
+npx prisma migrate dev --name add_user_phone
+<span class="c">#    → generates prisma/migrations/&lt;timestamp&gt;_add_user_phone/migration.sql</span>
+<span class="c">#    → applies it to your dev database and regenerates the client</span>
+
+<span class="c"># 2. In CI / production: apply pending migrations, never generate</span>
+npx prisma migrate deploy</code></pre>
+<pre><span class="lang">sql</span><code><span class="c">-- prisma/migrations/20260925101500_add_user_phone/migration.sql</span>
+ALTER TABLE <span class="s">"users"</span> ADD COLUMN <span class="s">"phone"</span> TEXT;</code></pre>
+<table><thead><tr><th>Command</th><th>Where</th><th>What it does</th></tr></thead><tbody><tr><td><code>migrate dev</code></td><td>Local only</td><td>Diff the schema, create and apply a migration, may reset the dev DB</td></tr><tr><td><code>migrate deploy</code></td><td>CI / production</td><td>Apply pending migrations only; never resets</td></tr><tr><td><code>migrate status</code></td><td>Anywhere</td><td>Show applied and pending migrations</td></tr><tr><td><code>db push</code></td><td>Prototyping only</td><td>Sync the schema <strong>without</strong> migration files</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>04 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Migrations</div><div class="num"><b>05</b> / 12</div></div>
+<h2>Sequelize and TypeORM Migrations</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// Sequelize CLI: npx sequelize-cli migration:generate --name add-user-phone</span>
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.addColumn(<span class="s">'users'</span>, <span class="s">'phone'</span>, { type: Sequelize.STRING });
+    await queryInterface.addIndex(<span class="s">'users'</span>, [<span class="s">'phone'</span>]);
+  },
+  async down(queryInterface) {
+    await queryInterface.removeIndex(<span class="s">'users'</span>, [<span class="s">'phone'</span>]);
+    await queryInterface.removeColumn(<span class="s">'users'</span>, <span class="s">'phone'</span>);
+  },
+};
+<span class="c">// npx sequelize-cli db:migrate   /   db:migrate:undo</span></code></pre>
+<pre><span class="lang">ts</span><code><span class="c">// TypeORM: npx typeorm migration:generate src/migrations/AddUserPhone -d src/data-source.ts</span>
+export class AddUserPhone1727258100000 implements MigrationInterface {
+  async up(q: QueryRunner) { await q.query(<span class="s">`ALTER TABLE "users" ADD "phone" varchar`</span>); }
+  async down(q: QueryRunner) { await q.query(<span class="s">`ALTER TABLE "users" DROP COLUMN "phone"`</span>); }
+}
+<span class="c">// npx typeorm migration:run -d src/data-source.ts</span></code></pre>
+<p><code>up</code> applies the change. <code>down</code> reverses it (Prisma generates only forward migrations).</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>05 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Migrations</div><div class="num"><b>06</b> / 12</div></div>
+<h2>The Golden Rules</h2><div class="body"><ol><li><strong>Never edit a migration that has already run</strong> on a shared environment. Write a new one.</li><li><strong>Commit migrations with the code that needs them</strong>, in the same pull request.</li><li><strong>Review the generated SQL.</strong> A column rename can be generated as "drop + add", which destroys the data.</li><li><strong>Run migrations as a deploy step</strong> (<code>migrate deploy</code>), not on app startup from several instances at once.</li><li><strong>Never use schema sync in production</strong>: TypeORM <code>synchronize: true</code>, Sequelize <code>sync({ alter: true })</code>, Prisma <code>db push</code>.</li><li><strong>Test migrations</strong> against a copy of production-sized data before running them on production.</li></ol></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>06 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Migrations</div><div class="num"><b>07</b> / 12</div></div>
+<h2>Zero-Downtime Changes: Expand and Contract</h2><div class="body"><p>During a deploy, old and new code run <strong>at the same time</strong>. A breaking schema change (rename, drop, <code>NOT NULL</code>) must be split into safe steps:</p>
+<pre><code>Rename users.name → users.full_name without downtime:
+
+1. Expand     ADD COLUMN full_name              (nullable; old code ignores it)
+2. Dual-write deploy code that writes BOTH name and full_name
+3. Backfill   UPDATE users SET full_name = name WHERE full_name IS NULL   (in batches)
+4. Switch     deploy code that reads full_name
+5. Contract   DROP COLUMN name                  (after every instance runs the new code)</code></pre>
+<p>Each step is its own migration and its own deploy.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>07 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Migrations</div><div class="num"><b>08</b> / 12</div></div>
+<h2>Locks: When a Migration Can Take Production Down</h2><div class="body"><p>Some DDL statements lock the table while they run, blocking reads or writes:</p>
+<table><thead><tr><th>Operation (PostgreSQL)</th><th>Risk</th><th>Safer way</th></tr></thead><tbody><tr><td><code>CREATE INDEX</code></td><td>Blocks writes while building</td><td><code>CREATE INDEX CONCURRENTLY</code> (can't run inside a transaction)</td></tr><tr><td><code>ADD COLUMN … DEFAULT x</code></td><td>Fast since PostgreSQL 11</td><td>✅ fine</td></tr><tr><td><code>ADD COLUMN … NOT NULL</code> without a default on a full table</td><td>Fails</td><td>Add nullable → backfill → <code>SET NOT NULL</code></td></tr><tr><td>Change a column type</td><td>Rewrites the table</td><td>Add a new column and migrate the data</td></tr><tr><td><code>ADD FOREIGN KEY</code></td><td>Scans the table under lock</td><td><code>ADD … NOT VALID</code>, then <code>VALIDATE CONSTRAINT</code></td></tr></tbody></table>
+<pre><span class="lang">sql</span><code><span class="c">-- Prisma: hand-edit the migration file for a concurrent index</span>
+<span class="c">-- (generate with `migrate dev --create-only`, then edit before applying)</span>
+CREATE INDEX CONCURRENTLY <span class="s">"orders_user_id_idx"</span> ON <span class="s">"orders"</span>(<span class="s">"user_id"</span>);</code></pre>
+<p>Set a <code>lock_timeout</code> so a migration fails fast instead of queueing behind a long query.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>08 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Migrations</div><div class="num"><b>09</b> / 12</div></div>
+<h2>Schema Migrations vs Data Migrations vs Seeds</h2><div class="body"><table><thead><tr><th></th><th>Changes</th><th>Example</th><th>Runs</th></tr></thead><tbody><tr><td><strong>Schema migration</strong></td><td>Structure</td><td>Add a column, create an index</td><td>Once, in order</td></tr><tr><td><strong>Data migration</strong></td><td>Existing rows</td><td>Backfill <code>full_name</code>, fix bad statuses</td><td>Once; in batches for big tables</td></tr><tr><td><strong>Seed</strong></td><td>Starting data</td><td>Admin user, countries, demo data</td><td>Dev / test, or on first setup</td></tr></tbody></table>
+<pre><span class="lang">bash</span><code>npx prisma db seed          <span class="c"># runs the seed script set in package.json / prisma config</span></code></pre>
+<p>Keep large data backfills <strong>out of</strong> schema migrations: run them in batches so they don't hold locks or time out.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>09 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Migrations</div><div class="num"><b>10</b> / 12</div></div>
+<h2>Rolling Back</h2><div class="body"><ul><li><strong>Down migrations</strong> (Sequelize, TypeORM) can undo schema changes, but they <strong>can't restore dropped data</strong>.</li><li>In production, most teams <strong>roll forward</strong>: they fix the problem with a new migration.</li><li>Before any destructive migration (drop, type change): <strong>take a backup</strong> and confirm the restore works.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>10 / 12</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Migrations</div><div class="num"><b>11</b> / 12</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li>A migration is a <strong>versioned, ordered schema change</strong> in git. A migrations table makes sure each one runs <strong>exactly once</strong>.</li><li>Use <code>migrate dev</code> locally and <code>migrate deploy</code> in CI / production. <strong>Never schema-sync in production.</strong></li><li><strong>Never edit applied migrations</strong>, and always review the generated SQL.</li><li>Make breaking changes with <strong>expand → backfill → contract</strong>, one deploy per step.</li><li>Watch out for <strong>locks</strong>: <code>CREATE INDEX CONCURRENTLY</code>, <code>NOT VALID</code> constraints, <code>lock_timeout</code>.</li><li>Keep <strong>schema changes, data backfills and seeds</strong> separate. Roll forward in production.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>11 / 12</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>12</b> / 12</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's <span class="g">Migrations</span>.</h1><p class="src"><em>Sources: Prisma Docs (Migrate), Sequelize Docs (migrations), TypeORM Docs (migrations), PostgreSQL Docs (ALTER TABLE, CREATE INDEX). Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="08-transactions.html">Next deck: Transactions →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ORM Concepts</div><div>12 / 12</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>
