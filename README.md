@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="resrouces/orm%20and%20odm.png" alt="ORM & ODM Guide banner" width="100%" />
+</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma" />
