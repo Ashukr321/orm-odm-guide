@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mongoose Relationships · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 04 of 07</div><div class="num"><b>01</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1><span class="g">Mongoose</span> Relationships</h1><div class="lead"><p>Embed or reference: 1:1, 1:few, 1:many, many-to-many, followers, extended references, transactions and cascades.</p></div>
+<div class="meta"><span><b>11</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>01 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Relationships</div><div class="num"><b>02</b> / 13</div></div>
+<h2>Two Tools: Embed or Reference</h2><div class="body"><p>In MongoDB, a relationship is modelled by <strong>embedding</strong> the related data inside a document or <strong>referencing</strong> it by <code>ObjectId</code>. The choice depends on how the data is read and how big it can grow.</p>
+<table><thead><tr><th>Relationship</th><th>Blog example</th><th>Chosen design</th></tr></thead><tbody><tr><td>1:1</td><td>User ↔ settings</td><td><strong>Embed</strong> a sub-object</td></tr><tr><td>1:few</td><td>Post → comments (capped)</td><td><strong>Embed</strong> an array of subdocuments</td></tr><tr><td>1:many</td><td>User → posts</td><td><strong>Reference</strong> from the child (<code>post.author</code>)</td></tr><tr><td>M:N</td><td>Posts ↔ tags</td><td><strong>Array of references</strong> on one side (<code>post.tags</code>)</td></tr><tr><td>Self</td><td>User ↔ followers</td><td>Separate <code>follows</code> collection</td></tr></tbody></table>
+<p>Concepts: Collections · What Is ODM</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>02 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Relationships</div><div class="num"><b>03</b> / 13</div></div>
+<h2>One-to-One: Embed</h2><div class="body"><p>Settings are always read with the user and never on their own, so they live inside the user document.</p>
+<pre><span class="lang">js</span><code>const userSchema = new Schema({
+  email: String,
+  settings: {
+    theme:         { type: String, enum: [<span class="s">'light'</span>, <span class="s">'dark'</span>], default: <span class="s">'light'</span> },
+    emailDigest:   { type: Boolean, default: true },
+    language:      { type: String, default: <span class="s">'en'</span> },
+  },
+});
+
+await User.updateOne({ _id: id }, { $set: { <span class="s">'settings.theme'</span>: <span class="s">'dark'</span> } });
+const user = await User.findById(id).select(<span class="s">'email settings'</span>);</code></pre>
+<p>Use a <strong>referenced</strong> 1:1 (a separate collection with a unique <code>user</code> field) only when the other side is large or sensitive (for example, a big profile or billing details read on few pages).</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>03 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Relationships · 1/2</div><div class="num"><b>04</b> / 13</div></div>
+<h2>One-to-Few: Embedded Array</h2><div class="body"><p>Comments are read with the post and capped at 500 per post (see Schema).</p>
+<pre><span class="lang">js</span><code><span class="c">// Add</span>
+await Post.updateOne(
+  { _id: postId },
+  { $push: { comments: { body: <span class="s">'Great read!'</span>, author: userId } } },
+  { runValidators: true }
+);
+
+<span class="c">// Edit one comment (positional $ operator)</span>
+await Post.updateOne(
+  { _id: postId, <span class="s">'comments._id'</span>: commentId, <span class="s">'comments.author'</span>: userId },   <span class="c">// only the author</span>
+  { $set: { <span class="s">'comments.$.body'</span>: <span class="s">'Edited'</span> } }
+);
+
+<span class="c">// Remove</span>
+await Post.updateOne({ _id: postId }, { $pull: { comments: { _id: commentId } } });
+
+<span class="c">// Latest 5 comments without loading them all</span>
+await Post.findById(postId).select({ title: 1, comments: { $slice: -5 } });
+
+<span class="c">// Posts a user commented on</span>
+await Post.find({ <span class="s">'comments.author'</span>: userId }).select(<span class="s">'title'</span>);</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>04 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Relationships · 2/2</div><div class="num"><b>05</b> / 13</div></div>
+<h2>One-to-Few: Embedded Array</h2><div class="body"><p>Or work with subdocuments on a loaded post:</p>
+<pre><span class="lang">js</span><code>const post = await Post.findById(postId);
+post.comments.id(commentId).body = <span class="s">'Edited'</span>;
+post.comments.push({ body: <span class="s">'Another'</span>, author: userId });
+await post.save();</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>05 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Relationships</div><div class="num"><b>06</b> / 13</div></div>
+<h2>One-to-Many: Reference from the Child</h2><div class="body"><p>A user can write thousands of posts, so posts are their own collection and each post stores its <code>author</code>.</p>
+<pre><span class="lang">js</span><code><span class="c">// Create</span>
+await Post.create({ title: <span class="s">'Hello'</span>, author: user._id });
+
+<span class="c">// All posts by a user (indexed: { author: 1, createdAt: -1 })</span>
+await Post.find({ author: user._id }).sort({ createdAt: -1 });
+
+<span class="c">// The author of a post</span>
+await Post.findById(postId).populate(<span class="s">'author'</span>, <span class="s">'name email'</span>);
+
+<span class="c">// A user's posts from the user side, via the virtual defined in the schema</span>
+await User.findById(userId).populate({ path: <span class="s">'posts'</span>, select: <span class="s">'title'</span>, options: { sort: { createdAt: -1 } } });</code></pre>
+<p><strong>Don't</strong> also keep <code>user.posts: [ObjectId]</code>. That array grows without limit and must be kept in sync by hand. The virtual populate gives you the same API with a single source of truth.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>06 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Relationships</div><div class="num"><b>07</b> / 13</div></div>
+<h2>Many-to-Many: Array of References</h2><div class="body"><p>A post has a few tags; a tag has many posts. Store the references on the side with the <strong>small, bounded</strong> list: <code>post.tags</code>.</p>
+<pre><span class="lang">js</span><code><span class="c">// Tag a post (no duplicates)</span>
+await Post.updateOne({ _id: postId }, { $addToSet: { tags: { $each: [mongoId, nodeId] } } });
+
+<span class="c">// Untag</span>
+await Post.updateOne({ _id: postId }, { $pull: { tags: nodeId } });
+
+<span class="c">// Posts with a tag (multikey index on tags)</span>
+await Post.find({ tags: mongoId, published: true });
+
+<span class="c">// Posts with ALL of these tags / ANY of them</span>
+await Post.find({ tags: { $all: [mongoId, nodeId] } });
+await Post.find({ tags: { $in: [mongoId, nodeId] } });
+
+<span class="c">// A post with its tag names</span>
+await Post.findById(postId).populate(<span class="s">'tags'</span>, <span class="s">'name'</span>);</code></pre>
+<p>Alternative: store <strong>tag names</strong> instead of ids (<code>tags: ['mongodb', 'node']</code>). It's simpler and needs no populate, but renaming a tag means updating every post. That's a fine trade-off when renames are rare.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>07 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Relationships</div><div class="num"><b>08</b> / 13</div></div>
+<h2>Self-Referencing Many-to-Many: Followers</h2><div class="body"><p>Follower lists can be huge (think celebrities), so each "follow" is its own small document.</p>
+<pre><span class="lang">js</span><code>const followSchema = new Schema(
+  {
+    follower:  { type: Schema.Types.ObjectId, ref: <span class="s">'User'</span>, required: true },
+    following: { type: Schema.Types.ObjectId, ref: <span class="s">'User'</span>, required: true },
+  },
+  { timestamps: true }
+);
+followSchema.index({ follower: 1, following: 1 }, { unique: true });   <span class="c">// no double follows</span>
+followSchema.index({ following: 1, createdAt: -1 });                  <span class="c">// "who follows X"</span>
+export const Follow = model(<span class="s">'Follow'</span>, followSchema);
+
+await Follow.create({ follower: me, following: them });
+const followers = await Follow.find({ following: them }).populate(<span class="s">'follower'</span>, <span class="s">'name'</span>).limit(50);
+const followerCount = await Follow.countDocuments({ following: them });</code></pre>
+<p>This is the MongoDB version of a SQL join table.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>08 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Relationships</div><div class="num"><b>09</b> / 13</div></div>
+<h2>Extended Reference: Copy What You Show</h2><div class="body"><p>The feed shows each post's author name. Instead of populating on every request, copy the name into the post:</p>
+<pre><span class="lang">js</span><code>author: {
+  _id:  { type: Schema.Types.ObjectId, ref: <span class="s">'User'</span>, required: true },
+  name: String,
+},
+
+<span class="c">// When a user renames (rare), update their copies</span>
+await Post.updateMany({ <span class="s">'author._id'</span>: userId }, { $set: { <span class="s">'author.name'</span>: newName } });</code></pre>
+<p>Faster reads, at the cost of duplicated data you must keep in sync.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>09 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Relationships</div><div class="num"><b>10</b> / 13</div></div>
+<h2>Keeping Both Sides Consistent: Transactions</h2><div class="body"><p>Publishing a post also updates each tag's <code>postCount</code>. Both writes must succeed together, so use a <strong>transaction</strong> (this needs a replica set; see Setup).</p>
+<pre><span class="lang">js</span><code>import mongoose from <span class="s">'mongoose'</span>;
+
+async function publishPost(postId) {
+  await mongoose.connection.transaction(async (session) =&gt; {
+    const post = await Post.findById(postId).session(session).orFail();
+    if (post.published) return;
+
+    post.published = true;
+    await post.save({ session });
+
+    await Tag.updateMany({ _id: { $in: post.tags } }, { $inc: { postCount: 1 } }, { session });
+  });
+  <span class="c">// committed; if anything threw, both writes were rolled back (and transient errors retried)</span>
+}</code></pre>
+<ul><li>Pass **<code>session</code><strong> to </strong>every** operation inside, or it runs outside the transaction.</li><li>Keep transactions short, and prefer single-document atomic updates when they're enough. A single-document update is always atomic.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>10 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Relationships</div><div class="num"><b>11</b> / 13</div></div>
+<h2>Deleting Related Data (Cascades)</h2><div class="body"><p>MongoDB has no foreign keys, so nothing cascades automatically.</p>
+<pre><span class="lang">js</span><code>async function deleteUser(userId) {
+  await mongoose.connection.transaction(async (session) =&gt; {
+    const posts = await Post.find({ author: userId, published: true }).select(<span class="s">'tags'</span>).session(session);
+    const tagOps = posts.flatMap((p) =&gt; p.tags).map((tagId) =&gt; ({
+      updateOne: { filter: { _id: tagId }, update: { $inc: { postCount: -1 } } },
+    }));
+    if (tagOps.length) await Tag.bulkWrite(tagOps, { session });
+    await Post.deleteMany({ author: userId }, { session });
+    await Post.updateMany({}, { $pull: { comments: { author: userId } } }, { session });
+    await Follow.deleteMany({ $or: [{ follower: userId }, { following: userId }] }, { session });
+    await User.deleteOne({ _id: userId }, { session });
+  });
+}</code></pre>
+<p>Or soft-delete the user and clean up in a background job.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>11 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Relationships</div><div class="num"><b>12</b> / 13</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li><strong>Embed</strong> 1:1 and 1:few data that's read with the parent (settings, capped comments); update it with <code>$set</code>, <code>$push</code>, positional <code>$</code> and <code>$pull</code>.</li><li><strong>Reference from the child</strong> for 1:many (<code>post.author</code>), and read the reverse side with <strong>virtual populate</strong>, not a growing id array.</li><li><strong>M:N</strong>: an array of references on the bounded side (<code>post.tags</code>) with <code>$addToSet</code>/<code>$pull</code>/<code>$all</code>/<code>$in</code>, or a separate collection (<code>follows</code>) when both sides are large.</li><li><strong>Extended references</strong> copy display fields to avoid lookups.</li><li>No foreign keys: keep multi-document changes and cascades consistent with <strong>transactions</strong> (<code>connection.transaction</code>, pass <code>session</code> everywhere).</li></ul>
+<p>Next: Population</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>12 / 13</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>13</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's <span class="g">Mongoose</span> Relationships.</h1><p class="src"><em>Sources: MongoDB Docs (data modeling, transactions), Mongoose Docs (transactions). Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="05-mongoose-population.html">Next deck: Mongoose Population →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>13 / 13</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>

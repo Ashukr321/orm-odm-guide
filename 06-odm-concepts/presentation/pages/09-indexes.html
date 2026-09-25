@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Indexes · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 09 of 10</div><div class="num"><b>01</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1><span class="g">Indexes</span></h1><div class="lead"><p>COLLSCAN vs IXSCAN: declaring indexes, types and options, the ESR rule, explain() and syncIndexes.</p></div>
+<div class="meta"><span><b>11</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>01 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Indexes</div><div class="num"><b>02</b> / 13</div></div>
+<h2>What Is an Index</h2><div class="body"><p>An <strong>index</strong> is a sorted data structure (a B-tree) that lets MongoDB find documents <strong>without scanning the whole collection</strong>. Without one, a query is a <strong>COLLSCAN</strong> (read every document). With the right one, it's an <strong>IXSCAN</strong> (jump straight to the matches).</p>
+<pre><code>posts.find({ author: X }).sort({ createdAt: -1 })
+
+No index:  read all 1,000,000 posts → filter → sort in memory     (slow)
+Index {author: 1, createdAt: -1}:  jump to author X, already sorted (fast)</code></pre>
+<p>Every collection has a unique index on **<code>_id</code>** automatically.</p>
+<p>Deep dive: Indexing</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>02 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Indexes</div><div class="num"><b>03</b> / 13</div></div>
+<h2>Declaring Indexes in Mongoose</h2><div class="body"><p><strong>On a field:</strong></p>
+<pre><span class="lang">js</span><code>const userSchema = new Schema({
+  email:    { type: String, unique: true },     <span class="c">// unique index</span>
+  username: { type: String, index: true },      <span class="c">// regular index</span>
+  phone:    { type: String, unique: true, sparse: true },   <span class="c">// unique, but only where it exists</span>
+});</code></pre>
+<p><strong>On the schema</strong> (compound and special indexes):</p>
+<pre><span class="lang">js</span><code>postSchema.index({ author: 1, createdAt: -1 });              <span class="c">// compound</span>
+postSchema.index({ tags: 1 });                               <span class="c">// multikey (array field)</span>
+postSchema.index({ title: <span class="s">'text'</span>, body: <span class="s">'text'</span> });           <span class="c">// full-text search</span>
+postSchema.index({ <span class="s">'seo.slug'</span>: 1 }, { unique: true });       <span class="c">// unique on a nested path</span></code></pre>
+<p><code>1</code> = ascending, <code>-1</code> = descending. The direction matters only for compound indexes used in sorts.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>03 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Indexes</div><div class="num"><b>04</b> / 13</div></div>
+<h2>Index Types</h2><div class="body"><table><thead><tr><th>Type</th><th>Declared as</th><th>Use for</th></tr></thead><tbody><tr><td>Single field</td><td><code>{ email: 1 }</code></td><td>Lookups on one field</td></tr><tr><td>Compound</td><td><code>{ author: 1, createdAt: -1 }</code></td><td>Filter + sort, multi-field queries</td></tr><tr><td>Multikey</td><td><code>{ tags: 1 }</code> (on an array)</td><td>"Posts tagged X"</td></tr><tr><td>Text</td><td><code>{ title: 'text', body: 'text' }</code></td><td>Keyword search (<code>$text</code>)</td></tr><tr><td>Geospatial</td><td><code>{ location: '2dsphere' }</code></td><td>"Near me" queries</td></tr><tr><td>Hashed</td><td><code>{ userId: 'hashed' }</code></td><td>Hashed sharding</td></tr><tr><td>Wildcard</td><td><code>{ 'attributes.$**': 1 }</code></td><td>Flexible / unknown sub-fields</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>04 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Indexes</div><div class="num"><b>05</b> / 13</div></div>
+<h2>Index Options</h2><div class="body"><table><thead><tr><th>Option</th><th>Effect</th></tr></thead><tbody><tr><td><code>unique: true</code></td><td>Reject duplicate values (error <code>11000</code>)</td></tr><tr><td><code>sparse: true</code></td><td>Skip documents missing the field</td></tr><tr><td><code>partialFilterExpression</code></td><td>Index only documents matching a filter</td></tr><tr><td><code>expireAfterSeconds</code> / <code>expires</code></td><td><strong>TTL</strong>: auto-delete documents after a time</td></tr><tr><td><code>collation</code></td><td>Case-insensitive comparisons</td></tr><tr><td><code>name</code></td><td>Custom index name</td></tr></tbody></table>
+<pre><span class="lang">js</span><code><span class="c">// Unique email among active users only</span>
+userSchema.index({ email: 1 }, { unique: true, partialFilterExpression: { deletedAt: null } });
+
+<span class="c">// Sessions deleted 7 days after creation</span>
+sessionSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 7 });
+<span class="c">// or on the field: createdAt: { type: Date, default: Date.now, expires: '7d' }</span>
+
+<span class="c">// Case-insensitive unique usernames</span>
+userSchema.index({ username: 1 }, { unique: true, collation: { locale: <span class="s">'en'</span>, strength: 2 } });</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>05 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Indexes</div><div class="num"><b>06</b> / 13</div></div>
+<h2>Compound Indexes and the ESR Rule</h2><div class="body"><p>Order fields in a compound index by <strong>E</strong>quality → <strong>S</strong>ort → <strong>R</strong>ange:</p>
+<pre><span class="lang">js</span><code><span class="c">// Query: published posts of an author, newest first, from this year</span>
+Post.find({ author: id, published: true, createdAt: { $gte: jan1 } }).sort({ createdAt: -1 });
+
+<span class="c">// ESR index: equality (author, published) → sort (createdAt) → range (createdAt, same field)</span>
+postSchema.index({ author: 1, published: 1, createdAt: -1 });</code></pre>
+<p><strong>Prefix rule:</strong> an index on <code>{ a: 1, b: 1, c: 1 }</code> also serves queries on <code>{ a }</code> and <code>{ a, b }</code>, but <strong>not</strong> <code>{ b }</code> or <code>{ c }</code> alone.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>06 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Indexes</div><div class="num"><b>07</b> / 13</div></div>
+<h2>Checking a Query with <code>explain()</code></h2><div class="body"><pre><span class="lang">js</span><code>const plan = await Post.find({ author: id }).sort({ createdAt: -1 }).explain(<span class="s">'executionStats'</span>);
+
+plan.queryPlanner.winningPlan;              <span class="c">// look for IXSCAN (good) vs COLLSCAN (bad)</span>
+plan.executionStats.totalDocsExamined;      <span class="c">// docs read</span>
+plan.executionStats.nReturned;              <span class="c">// docs returned</span>
+plan.executionStats.executionTimeMillis;</code></pre>
+<table><thead><tr><th>Sign</th><th>Meaning</th></tr></thead><tbody><tr><td><code>COLLSCAN</code></td><td>No usable index; every document was read</td></tr><tr><td><code>IXSCAN</code></td><td>Index used</td></tr><tr><td><code>SORT</code> stage (in memory)</td><td>The index doesn't cover the sort</td></tr><tr><td><code>totalDocsExamined</code> ≫ <code>nReturned</code></td><td>Index isn't selective enough</td></tr><tr><td><code>totalDocsExamined: 0</code></td><td><strong>Covered query</strong>: answered from the index alone</td></tr></tbody></table>
+<p><strong>Covered query</strong>: project only indexed fields (and exclude <code>_id</code> if it isn't in the index):</p>
+<pre><span class="lang">js</span><code>await User.find({ email: <span class="s">'ashu@example.com'</span> }, { email: 1, _id: 0 });</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>07 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Indexes</div><div class="num"><b>08</b> / 13</div></div>
+<h2>Building and Syncing Indexes</h2><div class="body"><p>By default Mongoose calls <code>createIndexes()</code> for every model at startup (**<code>autoIndex: true</code>**). Convenient in development, risky in production (index builds on big collections use resources).</p>
+<pre><span class="lang">js</span><code><span class="c">// Production: turn it off</span>
+mongoose.set(<span class="s">'autoIndex'</span>, false);   <span class="c">// or per schema: { autoIndex: false }</span>
+
+<span class="c">// Then build deliberately (a deploy script or migration step)</span>
+await Post.syncIndexes();   <span class="c">// create missing indexes, DROP ones not in the schema</span>
+await Post.diffIndexes();   <span class="c">// preview: { toCreate: [...], toDrop: [...] }</span>
+await Post.listIndexes();   <span class="c">// what exists now</span></code></pre>
+<blockquote><code>syncIndexes()</code> <strong>drops</strong> indexes that aren't in the schema, including ones someone added by hand. Run <code>diffIndexes()</code> first.</blockquote></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>08 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Indexes</div><div class="num"><b>09</b> / 13</div></div>
+<h2>Unique Index Gotchas</h2><div class="body"><ul><li><code>unique</code> only works once the index <strong>exists</strong>. If duplicates are already in the collection, the index build fails.</li><li>Duplicate inserts throw <code>E11000 duplicate key error</code> (<code>err.code === 11000</code>). Handle it as a 409 Conflict. See Validation.</li><li>Without <code>sparse</code> or a partial filter, <strong>only one</strong> document may be missing the field (a missing value is treated as <code>null</code>).</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>09 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Indexes</div><div class="num"><b>10</b> / 13</div></div>
+<h2>The Cost of Indexes</h2><div class="body"><table><thead><tr><th>Benefit</th><th>Cost</th></tr></thead><tbody><tr><td>Much faster reads, filters and sorts</td><td>Every insert/update/delete also updates each index</td></tr><tr><td>Enables unique constraints and TTL</td><td>Uses RAM and disk; indexes should fit in memory</td></tr><tr><td>Covered queries</td><td>Max 64 indexes per collection</td></tr></tbody></table>
+<p>Index the fields you <strong>filter, sort and join on</strong>, and remove indexes nothing uses:</p>
+<pre><span class="lang">js</span><code>await mongoose.connection.db.collection(<span class="s">'posts'</span>).aggregate([{ $indexStats: {} }]).toArray();</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>10 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Indexes</div><div class="num"><b>11</b> / 13</div></div>
+<h2>Blog Index Plan</h2><div class="body"><pre><span class="lang">js</span><code>userSchema.index({ email: 1 }, { unique: true });
+postSchema.index({ author: 1, createdAt: -1 });            <span class="c">// an author's posts, newest first</span>
+postSchema.index({ published: 1, createdAt: -1 });         <span class="c">// public feed</span>
+postSchema.index({ tags: 1, createdAt: -1 });              <span class="c">// tag pages</span>
+postSchema.index({ <span class="s">'seo.slug'</span>: 1 }, { unique: true });     <span class="c">// post by URL</span>
+postSchema.index({ title: <span class="s">'text'</span>, body: <span class="s">'text'</span> });         <span class="c">// search</span>
+tagSchema.index({ name: 1 }, { unique: true });</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>11 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Indexes</div><div class="num"><b>12</b> / 13</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li>An index turns a <strong>COLLSCAN</strong> into an <strong>IXSCAN</strong>; <code>_id</code> is always indexed.</li><li>Declare with <code>index: true</code> / <code>unique: true</code> on fields or <code>schema.index()</code> for compound, text, geospatial and TTL indexes.</li><li>Compound indexes follow <strong>ESR</strong> (Equality → Sort → Range) and the <strong>prefix rule</strong>.</li><li>Verify with **<code>explain('executionStats')</code>**: look for IXSCAN and compare <code>totalDocsExamined</code> to <code>nReturned</code>.</li><li>Turn **<code>autoIndex</code> off in production**; build with <code>syncIndexes()</code> after checking <code>diffIndexes()</code>.</li><li>Indexes speed reads but slow writes and use memory, so index what you query and drop what's unused.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>12 / 13</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>13</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's <span class="g">Indexes</span>.</h1><p class="src"><em>Sources: MongoDB Docs (indexes, explain), Mongoose Docs (indexes). Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="references.html">Next deck: References →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>13 / 13</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>

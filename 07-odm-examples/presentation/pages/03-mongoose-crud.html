@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mongoose CRUD · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 03 of 07</div><div class="num"><b>01</b> / 19</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1><span class="g">Mongoose</span> CRUD</h1><div class="lead"><p>Create, read, update and delete: query operators, pagination, update operators, bulk writes and errors.</p></div>
+<div class="meta"><span><b>17</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>01 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD</div><div class="num"><b>02</b> / 19</div></div>
+<h2>Mongoose CRUD</h2><div class="body"><p>All examples use the models from Schema:</p>
+<pre><span class="lang">js</span><code>import { User } from <span class="s">'./models/user.js'</span>;
+import { Post } from <span class="s">'./models/post.js'</span>;
+import { Tag } from <span class="s">'./models/tag.js'</span>;</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>02 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD</div><div class="num"><b>03</b> / 19</div></div>
+<h2>Method Cheat Sheet</h2><div class="body"><table><thead><tr><th>Operation</th><th>Methods</th></tr></thead><tbody><tr><td><strong>Create</strong></td><td><code>Model.create</code>, <code>new Model()</code> + <code>save()</code>, <code>insertMany</code></td></tr><tr><td><strong>Read</strong></td><td><code>find</code>, <code>findOne</code>, <code>findById</code>, <code>countDocuments</code>, <code>exists</code>, <code>distinct</code></td></tr><tr><td><strong>Update</strong></td><td><code>updateOne</code>, <code>updateMany</code>, <code>findByIdAndUpdate</code>, <code>findOneAndUpdate</code>, <code>doc.save()</code></td></tr><tr><td><strong>Delete</strong></td><td><code>deleteOne</code>, <code>deleteMany</code>, <code>findByIdAndDelete</code>, <code>doc.deleteOne()</code></td></tr><tr><td><strong>Bulk</strong></td><td><code>bulkWrite</code></td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>03 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD</div><div class="num"><b>04</b> / 19</div></div>
+<h2>Create</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// One document: validation + save hooks run</span>
+const user = await User.create({ email: <span class="s">'riya@example.com'</span>, name: <span class="s">'Riya'</span>, password: <span class="s">'password123'</span> });
+
+<span class="c">// Build, adjust, save</span>
+const post = new Post({ title: <span class="s">'Draft post'</span>, author: user._id });
+post.tags.push(tagId);
+await post.save();
+
+<span class="c">// Many documents, fast (validates, but no save hooks; ordered: false keeps going after an error)</span>
+await Tag.insertMany([{ name: <span class="s">'mongodb'</span> }, { name: <span class="s">'express'</span> }], { ordered: false });</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>04 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD · 1/3</div><div class="num"><b>05</b> / 19</div></div>
+<h2>Read</h2><div class="body"><p><strong>By id / first match / existence:</strong></p>
+<pre><span class="lang">js</span><code>const post = await Post.findById(id);                              <span class="c">// or null</span>
+const user = await User.findOne({ email: <span class="s">'riya@example.com'</span> });
+const taken = await User.exists({ email: <span class="s">'riya@example.com'</span> });   <span class="c">// { _id } or null</span></code></pre>
+<p><strong>Filters, projection, sorting, pagination:</strong></p>
+<pre><span class="lang">js</span><code>const posts = await Post.find({
+  published: true,
+  tags: { $in: [mongoTagId] },
+  createdAt: { $gte: new Date(<span class="s">'2026-01-01'</span>) },
+  title: { $regex: <span class="s">'mongoose'</span>, $options: <span class="s">'i'</span> },
+})
+  .select(<span class="s">'title slug author createdAt'</span>)      <span class="c">// projection</span>
+  .sort({ createdAt: -1 })
+  .skip(20)
+  .limit(10)
+  .lean();                                     <span class="c">// plain objects for the API response</span></code></pre>
+<p><strong>Common query operators:</strong></p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>05 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD · 2/3</div><div class="num"><b>06</b> / 19</div></div>
+<h2>Read</h2><div class="body"><table><thead><tr><th>Operator</th><th>Example</th></tr></thead><tbody><tr><td><code>$eq</code>, <code>$ne</code></td><td><code>{ role: { $ne: 'admin' } }</code></td></tr><tr><td><code>$gt</code>, <code>$gte</code>, <code>$lt</code>, <code>$lte</code></td><td><code>{ views: { $gte: 100 } }</code></td></tr><tr><td><code>$in</code>, <code>$nin</code></td><td><code>{ _id: { $in: ids } }</code></td></tr><tr><td><code>$exists</code></td><td><code>{ publishedAt: { $exists: true } }</code></td></tr><tr><td><code>$regex</code></td><td><code>{ title: { $regex: '^hello', $options: 'i' } }</code></td></tr><tr><td><code>$or</code>, <code>$and</code>, <code>$nor</code></td><td><code>{ $or: [{ published: true }, { author: me }] }</code></td></tr><tr><td><code>$all</code>, <code>$size</code>, <code>$elemMatch</code></td><td><code>{ tags: { $all: [a, b] } }</code>, <code>{ comments: { $size: 0 } }</code></td></tr><tr><td>Dot notation</td><td><code>{ 'comments.author': userId }</code></td></tr></tbody></table>
+<p><strong>Chainable query builder</strong> (same query, different style):</p>
+<pre><span class="lang">js</span><code>await Post.find().where(<span class="s">'published'</span>).equals(true).where(<span class="s">'views'</span>).gte(100).sort(<span class="s">'-createdAt'</span>).limit(10);
+await Post.find().published().sort(<span class="s">'-createdAt'</span>);   <span class="c">// query helper from the schema</span></code></pre>
+<p><strong>Count and distinct:</strong></p>
+<pre><span class="lang">js</span><code>await Post.countDocuments({ published: true });
+await Post.estimatedDocumentCount();         <span class="c">// fast, whole collection, from metadata</span>
+await Post.distinct(<span class="s">'author'</span>, { published: true });</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>06 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD · 3/3</div><div class="num"><b>07</b> / 19</div></div>
+<h2>Read</h2><div class="body"><p><strong>Full-text search</strong> (uses the text index on title/body):</p>
+<pre><span class="lang">js</span><code>await Post.find({ $text: { $search: <span class="s">'embedding referencing'</span> } }, { score: { $meta: <span class="s">'textScore'</span> } })
+  .sort({ score: { $meta: <span class="s">'textScore'</span> } })
+  .limit(10);</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>07 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD</div><div class="num"><b>08</b> / 19</div></div>
+<h2>Pagination: Offset vs Cursor</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// Offset: simple, but slow on deep pages</span>
+async function page(n = 1, size = 10) {
+  const filter = { published: true };
+  const [items, total] = await Promise.all([
+    Post.find(filter).sort({ _id: -1 }).skip((n - 1) * size).limit(size).lean(),
+    Post.countDocuments(filter),
+  ]);
+  return { items, total, pages: Math.ceil(total / size) };
+}
+
+<span class="c">// Cursor ("load more"): constant speed, stable under inserts</span>
+async function feed(after, size = 10) {
+  const filter = { published: true, ...(after &amp;&amp; { _id: { $lt: after } }) };
+  const items = await Post.find(filter).sort({ _id: -1 }).limit(size + 1).lean();
+  const hasMore = items.length &gt; size;
+  return { items: items.slice(0, size), next: hasMore ? items[size - 1]._id : null };
+}</code></pre>
+<p><code>_id</code> works as a cursor because ObjectIds increase over time.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>08 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD · 1/3</div><div class="num"><b>09</b> / 19</div></div>
+<h2>Update</h2><div class="body"><p><strong>Update operators</strong> (atomic, one round trip):</p>
+<pre><span class="lang">js</span><code>await Post.updateOne({ _id: id }, { $set: { title: <span class="s">'New title'</span> } });
+await Post.updateOne({ _id: id }, { $inc: { views: 1 } });
+await Post.updateOne({ _id: id }, { $addToSet: { tags: tagId } });   <span class="c">// add if missing</span>
+await Post.updateOne({ _id: id }, { $pull: { tags: tagId } });       <span class="c">// remove</span>
+await User.updateOne({ _id: id }, { $unset: { bio: <span class="s">''</span> } });</code></pre>
+<table><thead><tr><th>Operator</th><th>Does</th></tr></thead><tbody><tr><td><code>$set</code> / <code>$unset</code></td><td>Set / remove fields</td></tr><tr><td><code>$inc</code></td><td>Add to a number</td></tr><tr><td><code>$push</code> / <code>$addToSet</code></td><td>Append / append if not present</td></tr><tr><td><code>$pull</code> / <code>$pop</code></td><td>Remove matching / first-or-last element</td></tr><tr><td><code>$min</code> / <code>$max</code></td><td>Update only if lower / higher</td></tr><tr><td><code>$currentDate</code></td><td>Set to now</td></tr></tbody></table>
+<p><strong>Return the updated document:</strong></p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>09 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD · 2/3</div><div class="num"><b>10</b> / 19</div></div>
+<h2>Update</h2><div class="body"><pre><span class="lang">js</span><code>const post = await Post.findByIdAndUpdate(
+  id,
+  { $set: { published: true } },
+  { new: true, runValidators: true }        <span class="c">// return the updated doc; validate the update</span>
+);</code></pre>
+<p><strong>Load, modify, save</strong> (runs full validation and <code>save</code> hooks):</p>
+<pre><span class="lang">js</span><code>const post = await Post.findById(id);
+post.title = <span class="s">'Edited title'</span>;
+post.published = true;                       <span class="c">// pre('validate') sets publishedAt</span>
+await post.save();</code></pre>
+<p><strong>Upsert:</strong></p>
+<pre><span class="lang">js</span><code>const tag = await Tag.findOneAndUpdate(
+  { name: <span class="s">'mongodb'</span> },
+  { $setOnInsert: { name: <span class="s">'mongodb'</span> } },
+  { upsert: true, new: true }
+);</code></pre>
+<p><strong>Many documents:</strong></p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>10 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD · 3/3</div><div class="num"><b>11</b> / 19</div></div>
+<h2>Update</h2><div class="body"><pre><span class="lang">js</span><code>const { matchedCount, modifiedCount } = await Post.updateMany(
+  { author: userId, published: false },
+  { $set: { published: true } }
+);</code></pre>
+<blockquote><code>findByIdAndUpdate</code> / <code>updateOne</code> **don't run <code>save</code> hooks**. Changing a password this way would skip hashing. Use <code>findById</code> + <code>save()</code> for that.</blockquote></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>11 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD</div><div class="num"><b>12</b> / 19</div></div>
+<h2>Delete</h2><div class="body"><pre><span class="lang">js</span><code>await Post.deleteOne({ _id: id });
+await Post.findByIdAndDelete(id);                       <span class="c">// returns the deleted document</span>
+await Post.deleteMany({ published: false, createdAt: { $lt: new Date(<span class="s">'2025-01-01'</span>) } });
+
+const post = await Post.findById(id);
+await post.deleteOne();                                 <span class="c">// document method</span></code></pre>
+<p><strong>Soft delete</strong> instead: add <code>deletedAt: Date</code>, set it on "delete", and filter it out with query middleware (see Middleware).</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>12 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD</div><div class="num"><b>13</b> / 19</div></div>
+<h2>Bulk Writes</h2><div class="body"><p>Mixed operations in one round trip:</p>
+<pre><span class="lang">js</span><code>await Post.bulkWrite([
+  { updateOne: { filter: { _id: a }, update: { $inc: { views: 10 } } } },
+  { updateMany: { filter: { author: spammer }, update: { $set: { published: false } } } },
+  { deleteOne: { filter: { _id: b } } },
+  { insertOne: { document: { title: <span class="s">'Imported'</span>, author: userId } } },
+], { ordered: false });</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>13 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD</div><div class="num"><b>14</b> / 19</div></div>
+<h2>Handling Errors</h2><div class="body"><table><thead><tr><th>Error</th><th>When</th><th>HTTP</th></tr></thead><tbody><tr><td><code>CastError</code></td><td>Invalid id or type (<code>'abc'</code> as ObjectId)</td><td>400</td></tr><tr><td><code>ValidationError</code></td><td>Schema validation failed</td><td>400</td></tr><tr><td><code>MongoServerError</code> with <code>code: 11000</code></td><td>Duplicate key (unique index)</td><td>409</td></tr><tr><td><code>DocumentNotFoundError</code></td><td><code>orFail()</code> found nothing</td><td>404</td></tr></tbody></table>
+<pre><span class="lang">js</span><code>const post = await Post.findById(id).orFail();   <span class="c">// throws DocumentNotFoundError if missing</span></code></pre>
+<p><strong>Central Express error handler:</strong></p>
+<pre><span class="lang">js</span><code>export function errorHandler(err, _req, res, _next) {
+  if (err.name === <span class="s">'CastError'</span>) return res.status(400).json({ error: <span class="s">`Invalid ${err.path}`</span> });
+  if (err.name === <span class="s">'ValidationError'</span>) {
+    return res.status(400).json({ errors: Object.values(err.errors).map((e) =&gt; ({ field: e.path, message: e.message })) });
+  }
+  if (err.code === 11000) return res.status(409).json({ error: <span class="s">'Already exists'</span>, fields: err.keyValue });
+  if (err.name === <span class="s">'DocumentNotFoundError'</span>) return res.status(404).json({ error: <span class="s">'Not found'</span> });
+  console.error(err);
+  res.status(500).json({ error: <span class="s">'Internal error'</span> });
+}</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>14 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD · 1/3</div><div class="num"><b>15</b> / 19</div></div>
+<h2>Putting It Together: a Posts Router</h2><div class="body"><p><strong>src/routes/posts.js</strong></p>
+<pre><span class="lang">js</span><code>import { Router } from <span class="s">'express'</span>;
+import { isValidObjectId } from <span class="s">'mongoose'</span>;
+import { Post } from <span class="s">'../models/post.js'</span>;
+
+export const posts = Router();
+
+posts.param(<span class="s">'id'</span>, (req, res, next, id) =&gt; (isValidObjectId(id) ? next() : res.sendStatus(404)));
+
+posts.get(<span class="s">'/'</span>, async (req, res) =&gt; {
+  const items = await Post.find().published()
+    .select(<span class="s">'title slug author createdAt'</span>)
+    .sort({ _id: -1 }).limit(20).lean();
+  res.json(items);
+});
+
+posts.get(<span class="s">'/:id'</span>, async (req, res) =&gt; {
+  res.json(await Post.findById(req.params.id).orFail().lean());
+});</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>15 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD · 2/3</div><div class="num"><b>16</b> / 19</div></div>
+<h2>Putting It Together: a Posts Router</h2><div class="body"><pre><span class="lang">js</span><code>posts.post(<span class="s">'/'</span>, async (req, res) =&gt; {
+  const { title, body, tags } = req.body;                 <span class="c">// pick fields; never pass req.body straight in</span>
+  const post = await Post.create({ title, body, tags, author: req.user.id });
+  res.status(201).json(post);
+});
+
+posts.patch(<span class="s">'/:id'</span>, async (req, res) =&gt; {
+  const post = await Post.findOne({ _id: req.params.id, author: req.user.id }).orFail();
+  Object.assign(post, pick(req.body, [<span class="s">'title'</span>, <span class="s">'body'</span>, <span class="s">'published'</span>]));
+  res.json(await post.save());
+});
+
+posts.delete(<span class="s">'/:id'</span>, async (req, res) =&gt; {
+  await Post.deleteOne({ _id: req.params.id, author: req.user.id });
+  res.sendStatus(204);
+});
+
+const pick = (obj, keys) =&gt; Object.fromEntries(keys.filter((k) =&gt; k in obj).map((k) =&gt; [k, obj[k]]));</code></pre>
+<p>Express 5 forwards rejected promises from async handlers to the error handler. On Express 4, wrap handlers or use <code>express-async-errors</code>.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>16 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD · 3/3</div><div class="num"><b>17</b> / 19</div></div>
+<h2>Putting It Together: a Posts Router</h2><div class="body"><blockquote><strong>Security:</strong> never pass raw <code>req.body</code> or <code>req.query</code> objects into filters. <code>{ email: { $ne: null } }</code> from a client is a NoSQL injection. Pick and validate fields, and keep <code>strictQuery</code> on.</blockquote></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>17 / 19</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose CRUD</div><div class="num"><b>18</b> / 19</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li><strong>Create</strong> with <code>create</code> (validation + hooks) or <code>insertMany</code> (fast, no <code>save</code> hooks).</li><li><strong>Read</strong> with <code>find</code> + operators, <code>select</code>, <code>sort</code>, <code>skip</code>/<code>limit</code> (or <code>_id</code> cursors), and <code>.lean()</code> for responses; <code>$text</code> for search.</li><li><strong>Update</strong> with atomic operators (<code>$set</code>, <code>$inc</code>, <code>$addToSet</code>, <code>$pull</code>), <code>{ new: true, runValidators: true }</code>, or load → modify → <code>save()</code> when you need hooks.</li><li><strong>Delete</strong> with <code>deleteOne</code> / <code>deleteMany</code> / <code>findByIdAndDelete</code>; batch mixed writes with <code>bulkWrite</code>.</li><li>Map <code>CastError</code>/<code>ValidationError</code> → 400, <code>11000</code> → 409, <code>orFail()</code> → 404. Never trust client objects as filters.</li></ul>
+<p>Next: Relationships</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>18 / 19</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>19</b> / 19</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's <span class="g">Mongoose</span> CRUD.</h1><p class="src"><em>Sources: Mongoose Docs (queries, models), MongoDB Docs (query and update operators). Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="04-mongoose-relationships.html">Next deck: Mongoose Relationships →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>19 / 19</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Documents · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 03 of 10</div><div class="num"><b>01</b> / 14</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1><span class="g">Documents</span></h1><div class="lead"><p>Model instances with change tracking: _id and __v, subdocuments, toJSON, lean and concurrent edits.</p></div>
+<div class="meta"><span><b>12</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>01 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Documents</div><div class="num"><b>02</b> / 14</div></div>
+<h2>Two Meanings of "Document"</h2><div class="body"><table><thead><tr><th></th><th>MongoDB document</th><th>Mongoose document</th></tr></thead><tbody><tr><td>What</td><td>A BSON object stored in a collection</td><td>A model <strong>instance</strong> wrapping that data</td></tr><tr><td>Has</td><td>Fields and values</td><td>Fields <strong>plus</strong> methods, getters/setters, virtuals, change tracking</td></tr><tr><td>You get it from</td><td>The driver, <code>.lean()</code>, <code>aggregate()</code></td><td><code>find()</code>, <code>findById()</code>, <code>new Model()</code></td></tr></tbody></table>
+<pre><span class="lang">js</span><code><span class="c">// MongoDB document (BSON, as stored)</span>
+{ _id: ObjectId(<span class="s">"66f1…"</span>), title: <span class="s">"Hello"</span>, published: false, __v: 0 }
+
+<span class="c">// Mongoose document</span>
+const post = await Post.findById(id);
+post instanceof Post;   <span class="c">// true</span>
+post.save; post.isModified; post.toJSON;   <span class="c">// all available</span></code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>02 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Documents</div><div class="num"><b>03</b> / 14</div></div>
+<h2><code>_id</code>, <code>id</code> and <code>__v</code></h2><div class="body"><pre><span class="lang">js</span><code>post._id;   <span class="c">// ObjectId("66f1c0e2…"), the primary key, auto-generated</span>
+post.id;    <span class="c">// "66f1c0e2…", a string virtual getter</span>
+post.__v;   <span class="c">// 0, the version key (used for array updates)</span></code></pre>
+<ul><li>Every document has a unique <code>_id</code>. The default is an <code>ObjectId</code>, which contains a timestamp: <code>post._id.getTimestamp()</code>.</li><li>Compare ids with <code>.equals()</code> or strings, <strong>never</strong> <code>===</code>:</li></ul>
+<pre><span class="lang">js</span><code>post.author.equals(user._id);            <span class="c">// ✅</span>
+String(post.author) === String(user._id); <span class="c">// ✅</span>
+post.author === user._id;                 <span class="c">// ❌ always false (different objects)</span></code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>03 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Documents</div><div class="num"><b>04</b> / 14</div></div>
+<h2>Creating Documents</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// 1. new + save: lets you change things before saving</span>
+const post = new Post({ title: <span class="s">'Hello'</span>, author: userId });
+post.tags.push(<span class="s">'mongodb'</span>);
+post.isNew;         <span class="c">// true</span>
+await post.save();  <span class="c">// defaults → validation → pre('save') → insertOne → post('save')</span>
+post.isNew;         <span class="c">// false</span>
+
+<span class="c">// 2. create: new + save in one call (runs the same validation and hooks)</span>
+const post2 = await Post.create({ title: <span class="s">'Second'</span>, author: userId });
+
+<span class="c">// 3. insertMany: fast bulk insert (validates; runs insertMany hooks, not save hooks)</span>
+await Post.insertMany([{ title: <span class="s">'A'</span>, author: userId }, { title: <span class="s">'B'</span>, author: userId }]);</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>04 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Documents</div><div class="num"><b>05</b> / 14</div></div>
+<h2>Reading and Changing Fields</h2><div class="body"><pre><span class="lang">js</span><code>const post = await Post.findById(id);
+
+post.title;                      <span class="c">// getter</span>
+post.get(<span class="s">'seo.slug'</span>);            <span class="c">// path access</span>
+post.title = <span class="s">'New title'</span>;        <span class="c">// setter (casts and applies `set` transforms)</span>
+post.set({ published: true, <span class="s">'seo.description'</span>: <span class="s">'Intro'</span> });</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>05 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Documents</div><div class="num"><b>06</b> / 14</div></div>
+<h2>Change Tracking</h2><div class="body"><p>Mongoose remembers what changed and sends only those paths on <code>save()</code>.</p>
+<pre><span class="lang">js</span><code>const post = await Post.findById(id);
+post.title = <span class="s">'Updated'</span>;
+post.tags.push(<span class="s">'odm'</span>);
+
+post.isModified(<span class="s">'title'</span>);   <span class="c">// true</span>
+post.modifiedPaths();       <span class="c">// ['title', 'tags']</span>
+await post.save();
+<span class="c">// posts.updateOne({ _id }, { $set: { title: 'Updated', tags: [...], updatedAt: … } })</span></code></pre>
+<p><strong>Mixed and Date mutations aren't detected automatically.</strong> Tell Mongoose:</p>
+<pre><span class="lang">js</span><code>post.extra.views = 10;          <span class="c">// Mixed field changed in place</span>
+post.markModified(<span class="s">'extra'</span>);
+post.publishedAt.setMonth(3);   <span class="c">// Date mutated in place</span>
+post.markModified(<span class="s">'publishedAt'</span>);
+await post.save();</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>06 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Documents · 1/2</div><div class="num"><b>07</b> / 14</div></div>
+<h2>Subdocuments</h2><div class="body"><p>Embedded documents (like comments) are documents too, with their own <code>_id</code>, validation and hooks.</p>
+<pre><span class="lang">js</span><code>const post = await Post.findById(id);
+
+<span class="c">// Add</span>
+post.comments.push({ body: <span class="s">'Great post!'</span>, author: userId });
+const added = post.comments.at(-1);
+
+<span class="c">// Find by _id</span>
+const comment = post.comments.id(commentId);
+comment.body = <span class="s">'Edited'</span>;
+
+<span class="c">// Remove</span>
+post.comments.id(commentId).deleteOne();   <span class="c">// or post.comments.pull(commentId)</span>
+
+await post.save();   <span class="c">// saves the parent (and all subdocuments) in one write</span>
+comment.parent();    <span class="c">// → post</span></code></pre>
+<p>Or update the array <strong>atomically</strong> without loading the post:</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>07 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Documents · 2/2</div><div class="num"><b>08</b> / 14</div></div>
+<h2>Subdocuments</h2><div class="body"><pre><span class="lang">js</span><code>await Post.updateOne({ _id: id }, { $push: { comments: { body: <span class="s">'Nice'</span>, author: userId } } });
+await Post.updateOne({ _id: id, <span class="s">'comments._id'</span>: commentId }, { $set: { <span class="s">'comments.$.body'</span>: <span class="s">'Edited'</span> } });
+await Post.updateOne({ _id: id }, { $pull: { comments: { _id: commentId } } });</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>08 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Documents · 1/2</div><div class="num"><b>09</b> / 14</div></div>
+<h2>Converting Documents: <code>toObject</code>, <code>toJSON</code>, <code>lean</code></h2><div class="body"><pre><span class="lang">js</span><code>const post = await Post.findById(id);
+post.toObject();        <span class="c">// plain JS object</span>
+post.toJSON();          <span class="c">// what res.json(post) / JSON.stringify use</span>
+
+<span class="c">// Hide fields and include virtuals everywhere</span>
+postSchema.set(<span class="s">'toJSON'</span>, {
+  virtuals: true,
+  transform: (_doc, ret) =&gt; { delete ret.__v; return ret; },
+});</code></pre>
+<p>**<code>.lean()</code>** skips creating Mongoose documents entirely:</p>
+<pre><span class="lang">js</span><code>const posts = await Post.find({ published: true }).lean();
+<span class="c">// plain objects: faster and lighter, but no save(), virtuals, getters or change tracking</span></code></pre>
+<table><thead><tr><th></th><th>Mongoose document</th><th><code>.lean()</code> object</th></tr></thead><tbody><tr><td>Speed / memory</td><td>Slower, heavier</td><td>Much faster, lighter</td></tr><tr><td><code>save()</code>, methods</td><td>✅</td><td>❌</td></tr><tr><td>Virtuals, getters</td><td>✅</td><td>❌ (unless you add plugins)</td></tr><tr><td>Use for</td><td>Load → modify → save</td><td>Read-only API responses</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>09 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Documents · 2/2</div><div class="num"><b>10</b> / 14</div></div>
+<h2>Converting Documents: <code>toObject</code>, <code>toJSON</code>, <code>lean</code></h2><div class="body"><p><code>Model.hydrate(plainObj)</code> turns a plain object (for example, from <code>aggregate</code>) back into a document.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>10 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Documents</div><div class="num"><b>11</b> / 14</div></div>
+<h2>Deleting Documents</h2><div class="body"><pre><span class="lang">js</span><code>await post.deleteOne();                    <span class="c">// document method (runs document deleteOne hooks if configured)</span>
+await Post.findByIdAndDelete(id);          <span class="c">// returns the deleted document</span>
+await Post.deleteMany({ published: false }); <span class="c">// query: no document hooks</span></code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>11 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Documents</div><div class="num"><b>12</b> / 14</div></div>
+<h2>The Version Key and Concurrent Edits</h2><div class="body"><p><code>__v</code> protects <strong>array</strong> updates. If two requests load the same post and both modify <code>comments</code> by position, the second <code>save()</code> throws a <code>VersionError</code>.</p>
+<pre><span class="lang">js</span><code><span class="c">// Stronger: check the version on every save, not just array changes</span>
+new Schema({ /* … */ }, { optimisticConcurrency: true });</code></pre>
+<p>For simple counters, skip read-modify-write entirely:</p>
+<pre><span class="lang">js</span><code>await Post.updateOne({ _id: id }, { $inc: { views: 1 } });   <span class="c">// atomic</span></code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>12 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Documents</div><div class="num"><b>13</b> / 14</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li>A <strong>Mongoose document</strong> is a model instance: data plus methods, virtuals, getters/setters and <strong>change tracking</strong>. A MongoDB document is just BSON.</li><li><code>_id</code> is the primary key (ObjectId), <code>id</code> is its string form, and <code>__v</code> is the version key. Compare ids with <code>.equals()</code>, never <code>===</code>.</li><li><code>save()</code> sends only <strong>modified paths</strong>; use <code>markModified()</code> for Mixed and in-place Date changes.</li><li><strong>Subdocuments</strong>: <code>push</code>, <code>.id()</code>, <code>.deleteOne()</code> + <code>save()</code>, or atomic <code>$push</code> / <code>$set</code> with <code>$</code> / <code>$pull</code>.</li><li>Use **<code>.lean()</code>** for read-only responses; <code>toJSON</code> transforms control API output; <code>optimisticConcurrency</code> or atomic operators handle concurrent edits.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>13 / 14</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>14</b> / 14</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's <span class="g">Documents</span>.</h1><p class="src"><em>Sources: Mongoose Docs (documents, subdocuments, lean). Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="04-collections.html">Next deck: Collections →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Concepts</div><div>14 / 14</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>

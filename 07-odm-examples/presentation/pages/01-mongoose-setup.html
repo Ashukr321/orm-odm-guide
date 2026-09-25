@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mongoose Setup · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 01 of 07</div><div class="num"><b>01</b> / 17</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1><span class="g">Mongoose</span> Setup</h1><div class="lead"><p>From an empty folder to a connected Express API: a local replica set, one pooled connection, seeding and indexes.</p></div>
+<div class="meta"><span><b>15</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>01 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup</div><div class="num"><b>02</b> / 17</div></div>
+<h2>What You'll Build</h2><div class="body"><p>A Node.js blog API on <strong>MongoDB</strong> with Mongoose. It's the same domain as the Prisma and Sequelize pages, modelled the document way:</p>
+<pre><code>users ──1:N── posts        (post.author → users._id)
+                │
+                ├── comments[]   embedded in each post
+                └── tags[]       references to tags</code></pre>
+<blockquote>Examples target <strong>Mongoose 8</strong> with ES modules. Concepts behind each step are in ODM Concepts.</blockquote></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>02 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup</div><div class="num"><b>03</b> / 17</div></div>
+<h2>Prerequisites</h2><div class="body"><table><thead><tr><th>Tool</th><th>Version</th></tr></thead><tbody><tr><td>Node.js</td><td>20+</td></tr><tr><td>MongoDB</td><td>7+ (Docker, local install, or MongoDB Atlas)</td></tr></tbody></table>
+<p><strong>Start MongoDB with Docker as a single-node replica set</strong> (a replica set is required for <strong>transactions</strong>):</p>
+<pre><span class="lang">bash</span><code>docker run -d --name blog-mongo -p 27017:27017 mongo:8 --replSet rs0</code></pre>
+<pre><span class="lang">bash</span><code>docker exec blog-mongo mongosh --quiet --eval <span class="s">"rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] })"</span></code></pre>
+<p><strong>Or use MongoDB Atlas</strong> (free tier): create a cluster, add a database user, allow your IP, and copy the <code>mongodb+srv://…</code> connection string. Atlas clusters are replica sets already.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>03 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup · 1/2</div><div class="num"><b>04</b> / 17</div></div>
+<h2>1. Create the Project</h2><div class="body"><pre><span class="lang">bash</span><code>mkdir mongoose-blog &amp;&amp; cd mongoose-blog
+npm init -y
+npm install mongoose dotenv express
+npm install -D nodemon</code></pre>
+<p><strong>package.json</strong></p>
+<pre><span class="lang">json</span><code>{
+  <span class="s">"type"</span>: <span class="s">"module"</span>,
+  <span class="s">"scripts"</span>: {
+    <span class="s">"dev"</span>: <span class="s">"nodemon src/server.js"</span>,
+    <span class="s">"start"</span>: <span class="s">"node src/server.js"</span>,
+    <span class="s">"seed"</span>: <span class="s">"node src/seed.js"</span>,
+    <span class="s">"db:indexes"</span>: <span class="s">"node src/scripts/sync-indexes.js"</span>
+  }
+}</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>04 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup · 2/2</div><div class="num"><b>05</b> / 17</div></div>
+<h2>1. Create the Project</h2><div class="body"><pre><code>mongoose-blog/
+├── .env
+├── package.json
+└── src/
+    ├── db.js              ← connection
+    ├── models/
+    │   ├── user.js
+    │   ├── post.js
+    │   └── tag.js
+    ├── routes/
+    ├── scripts/
+    ├── seed.js
+    └── server.js</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>05 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup</div><div class="num"><b>06</b> / 17</div></div>
+<h2>2. Configure the Connection String</h2><div class="body"><p><strong>.env</strong></p>
+<pre><span class="lang">bash</span><code><span class="c"># Docker replica set</span>
+MONGODB_URI=<span class="s">"mongodb://localhost:27017/blog?replicaSet=rs0"</span>
+
+<span class="c"># Atlas</span>
+<span class="c"># MONGODB_URI="mongodb+srv://USER:PASSWORD@cluster0.xxxxx.mongodb.net/blog?retryWrites=true&amp;w=majority"</span></code></pre>
+<table><thead><tr><th>Part</th><th>Meaning</th></tr></thead><tbody><tr><td><code>mongodb://</code> / <code>mongodb+srv://</code></td><td>Standard / DNS seed-list (Atlas) format</td></tr><tr><td><code>localhost:27017</code></td><td>Host and port</td></tr><tr><td><code>/blog</code></td><td>Database name (created on first write)</td></tr><tr><td><code>replicaSet=rs0</code></td><td>Replica set name (needed for transactions locally)</td></tr><tr><td><code>retryWrites=true&amp;w=majority</code></td><td>Retry transient write errors; wait for majority acknowledgement</td></tr></tbody></table>
+<p>Add <code>.env</code> to <code>.gitignore</code>.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>06 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup · 1/2</div><div class="num"><b>07</b> / 17</div></div>
+<h2>3. Connect Once</h2><div class="body"><p><strong>src/db.js</strong></p>
+<pre><span class="lang">js</span><code>import <span class="s">'dotenv/config'</span>;
+import mongoose from <span class="s">'mongoose'</span>;
+
+mongoose.set(<span class="s">'strictQuery'</span>, true);                             <span class="c">// drop unknown filter keys</span>
+if (process.env.NODE_ENV === <span class="s">'development'</span>) mongoose.set(<span class="s">'debug'</span>, true);  <span class="c">// log every command</span>
+
+export async function connectDB() {
+  await mongoose.connect(process.env.MONGODB_URI, {
+    maxPoolSize: 10,                    <span class="c">// connections in the pool (default 100)</span>
+    serverSelectionTimeoutMS: 5000,     <span class="c">// fail fast if MongoDB is unreachable</span>
+    autoIndex: process.env.NODE_ENV !== <span class="s">'production'</span>,   <span class="c">// build indexes on startup in dev only</span>
+  });
+  console.log(<span class="s">`✅ MongoDB connected: ${mongoose.connection.name}`</span>);
+}
+
+mongoose.connection.on(<span class="s">'disconnected'</span>, () =&gt; console.warn(<span class="s">'⚠️  MongoDB disconnected'</span>));
+mongoose.connection.on(<span class="s">'error'</span>, (err) =&gt; console.error(<span class="s">'MongoDB error:'</span>, err.message));
+
+export async function disconnectDB() {
+  await mongoose.disconnect();
+}</code></pre>
+<p><strong>src/server.js</strong></p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>07 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup · 2/2</div><div class="num"><b>08</b> / 17</div></div>
+<h2>3. Connect Once</h2><div class="body"><pre><span class="lang">js</span><code>import express from <span class="s">'express'</span>;
+import { connectDB, disconnectDB } from <span class="s">'./db.js'</span>;
+
+const app = express();
+app.use(express.json());
+app.get(<span class="s">'/health'</span>, (_req, res) =&gt; res.json({ ok: true }));
+
+await connectDB();                      <span class="c">// connect BEFORE accepting requests</span>
+const server = app.listen(3000, () =&gt; console.log(<span class="s">'API on http://localhost:3000'</span>));
+
+<span class="c">// Graceful shutdown: finish requests, then close the pool</span>
+for (const signal of [<span class="s">'SIGINT'</span>, <span class="s">'SIGTERM'</span>]) {
+  process.on(signal, async () =&gt; {
+    server.close();
+    await disconnectDB();
+    process.exit(0);
+  });
+}</code></pre>
+<pre><span class="lang">bash</span><code>npm run dev</code></pre>
+<pre><code>✅ MongoDB connected: blog
+API on http:<span class="c">//localhost:3000</span></code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>08 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup · 1/2</div><div class="num"><b>09</b> / 17</div></div>
+<h2>Connection Details Worth Knowing</h2><div class="body"><p><strong>One connection pool per app.</strong> <code>mongoose.connect()</code> creates the default connection and its pool; every model uses it. Don't connect per request.</p>
+<p><strong>Command buffering.</strong> Mongoose queues model calls until the connection is open. If it never opens, you get:</p>
+<pre><code>MongooseError: Operation `users.findOne()` buffering timed out after 10000ms</code></pre>
+<p>That almost always means "not connected". Check the URI, and make sure you <code>await connectDB()</code> before serving traffic.</p>
+<p><strong>Serverless / hot reload</strong> (Next.js, Vercel functions): cache the connection on <code>globalThis</code> so each invocation doesn't open a new pool.</p>
+<pre><span class="lang">js</span><code>const cached = (globalThis._mongoose ??= { conn: null, promise: null });
+
+export async function connectDB() {
+  if (cached.conn) return cached.conn;
+  cached.promise ??= mongoose.connect(process.env.MONGODB_URI, { maxPoolSize: 5 });
+  cached.conn = await cached.promise;
+  return cached.conn;
+}</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>09 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup · 2/2</div><div class="num"><b>10</b> / 17</div></div>
+<h2>Connection Details Worth Knowing</h2><div class="body"><p><strong>Several databases:</strong> use <code>mongoose.createConnection(uri)</code> and register models on that connection. See Models.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>10 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup · 1/2</div><div class="num"><b>11</b> / 17</div></div>
+<h2>4. Seed Some Data</h2><div class="body"><p><strong>src/seed.js</strong> (the models come from Schema)</p>
+<pre><span class="lang">js</span><code>import { connectDB, disconnectDB } from <span class="s">'./db.js'</span>;
+import { User } from <span class="s">'./models/user.js'</span>;
+import { Post } from <span class="s">'./models/post.js'</span>;
+import { Tag } from <span class="s">'./models/tag.js'</span>;
+
+await connectDB();
+await Promise.all([User.deleteMany(), Post.deleteMany(), Tag.deleteMany()]);
+
+const [ashu, riya] = await User.create([
+  { email: <span class="s">'ashu@example.com'</span>, name: <span class="s">'Ashu'</span>, password: <span class="s">'password123'</span>, role: <span class="s">'admin'</span> },
+  { email: <span class="s">'riya@example.com'</span>, name: <span class="s">'Riya'</span>, password: <span class="s">'password123'</span> },
+]);
+const [mongo, node] = await Tag.create([{ name: <span class="s">'mongodb'</span> }, { name: <span class="s">'node'</span> }]);
+
+await Post.create([
+  { title: <span class="s">'Hello Mongoose'</span>, body: <span class="s">'First post'</span>, author: ashu._id, tags: [mongo._id], published: true,
+    comments: [{ body: <span class="s">'Nice!'</span>, author: riya._id }] },
+  { title: <span class="s">'Embedding vs referencing'</span>, body: <span class="s">'Draft'</span>, author: riya._id, tags: [mongo._id, node._id] },
+]);
+
+console.log(<span class="s">'🌱 Seeded'</span>);
+await disconnectDB();</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>11 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup · 2/2</div><div class="num"><b>12</b> / 17</div></div>
+<h2>4. Seed Some Data</h2><div class="body"><pre><span class="lang">bash</span><code>npm run seed</code></pre>
+<p><code>User.create([...])</code> runs validation and <code>save</code> hooks (like password hashing) for each document. <code>insertMany</code> would be faster but skips <code>save</code> hooks.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>12 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup</div><div class="num"><b>13</b> / 17</div></div>
+<h2>5. Build Indexes in Production</h2><div class="body"><p>With <code>autoIndex</code> off in production, build indexes as a deploy step:</p>
+<p><strong>src/scripts/sync-indexes.js</strong></p>
+<pre><span class="lang">js</span><code>import { connectDB, disconnectDB } from <span class="s">'../db.js'</span>;
+import { User } from <span class="s">'../models/user.js'</span>;
+import { Post } from <span class="s">'../models/post.js'</span>;
+import { Tag } from <span class="s">'../models/tag.js'</span>;
+
+await connectDB();
+for (const model of [User, Post, Tag]) {
+  console.log(model.modelName, await model.diffIndexes());
+  await model.syncIndexes();
+}
+await disconnectDB();</code></pre>
+<p>See Indexes.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>13 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup</div><div class="num"><b>14</b> / 17</div></div>
+<h2>Inspecting Data</h2><div class="body"><table><thead><tr><th>Tool</th><th>Use</th></tr></thead><tbody><tr><td><code>mongosh</code></td><td>Shell: <code>docker exec -it blog-mongo mongosh blog</code>, then <code>db.posts.find()</code></td></tr><tr><td>MongoDB Compass</td><td>GUI: browse documents, indexes, explain plans</td></tr><tr><td>Atlas Data Explorer</td><td>Web UI for Atlas clusters</td></tr><tr><td><code>mongoose.set('debug', true)</code></td><td>Print every command your app sends</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>14 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup</div><div class="num"><b>15</b> / 17</div></div>
+<h2>Common Setup Errors</h2><div class="body"><table><thead><tr><th>Error</th><th>Fix</th></tr></thead><tbody><tr><td><code>MongooseServerSelectionError: connect ECONNREFUSED</code></td><td>MongoDB isn't running, or wrong host/port</td></tr><tr><td><code>buffering timed out after 10000ms</code></td><td>Not connected yet; <code>await connectDB()</code> first; check the URI</td></tr><tr><td><code>bad auth : authentication failed</code></td><td>Wrong user/password; URL-encode special characters in the password</td></tr><tr><td>Atlas <code>querySrv ENOTFOUND</code> / timeout</td><td>Wrong cluster host, DNS issues, or your IP isn't allow-listed</td></tr><tr><td><code>Transaction numbers are only allowed on a replica set member or mongos</code></td><td>Start MongoDB as a replica set (see Prerequisites)</td></tr><tr><td><code>OverwriteModelError: Cannot overwrite model once compiled</code></td><td>Hot reload re-registering models; use `mongoose.models.X</td><td></td><td>model(...)`</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>15 / 17</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Setup</div><div class="num"><b>16</b> / 17</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li>Install <code>mongoose</code> (it bundles the official <code>mongodb</code> driver) and put the connection string in <code>MONGODB_URI</code>.</li><li>Call **<code>mongoose.connect()</code> once** at startup, before serving requests; it creates one pooled default connection (<code>maxPoolSize</code>).</li><li>Set <code>serverSelectionTimeoutMS</code> to fail fast, <code>strictQuery</code>, <code>debug</code> in development, and <code>autoIndex</code> only outside production.</li><li>"Buffering timed out" means <strong>not connected</strong>; transactions need a <strong>replica set</strong> (Atlas or a single-node <code>--replSet</code> locally).</li><li>Cache the connection on <code>globalThis</code> in serverless/hot-reload environments, and close it on shutdown.</li></ul>
+<p>Next: Schema</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>16 / 17</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>17</b> / 17</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's <span class="g">Mongoose</span> Setup.</h1><p class="src"><em>Sources: Mongoose Docs (connections), MongoDB Docs (replica sets, connection strings). Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="02-mongoose-schema.html">Next deck: The Blog Schema →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>17 / 17</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>

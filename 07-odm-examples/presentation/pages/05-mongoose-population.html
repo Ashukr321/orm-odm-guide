@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mongoose Population · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 05 of 07</div><div class="num"><b>01</b> / 16</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1><span class="g">Mongoose</span> Population</h1><div class="lead"><p>The blog's read endpoints: feed, post page, profile with counts, perDocumentLimit, refPath and the N+1 trap.</p></div>
+<div class="meta"><span><b>14</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>01 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population</div><div class="num"><b>02</b> / 16</div></div>
+<h2>Mongoose Population</h2><div class="body"><p>This page builds the blog's read endpoints with <code>populate()</code>. How it works under the hood is covered in Population.</p>
+<pre><span class="lang">js</span><code>import { User } from <span class="s">'./models/user.js'</span>;
+import { Post } from <span class="s">'./models/post.js'</span>;
+import { Tag } from <span class="s">'./models/tag.js'</span>;
+
+mongoose.set(<span class="s">'debug'</span>, true);   <span class="c">// watch the extra queries populate sends</span></code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>02 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population · 1/2</div><div class="num"><b>03</b> / 16</div></div>
+<h2>1. Feed: Posts with Author and Tags</h2><div class="body"><pre><span class="lang">js</span><code>async function getFeed({ limit = 20 } = {}) {
+  return Post.find({ published: true })
+    .select(<span class="s">'title slug author tags createdAt'</span>)
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .populate(<span class="s">'author'</span>, <span class="s">'name'</span>)        <span class="c">// only the fields the card shows</span>
+    .populate(<span class="s">'tags'</span>, <span class="s">'name'</span>)
+    .lean();
+}</code></pre>
+<pre><code>Mongoose: posts.find({ published: true }, { sort: { createdAt: -1 }, limit: 20, projection: {…} })
+Mongoose: users.find({ _id: { '$in': [ …up to 20 ids ] } }, { projection: { name: 1 } })
+Mongoose: tags.find({ _id: { '$in': [ … ] } }, { projection: { name: 1 } })</code></pre>
+<p><strong>3 queries</strong> for 20 posts, however many there are. Always <code>select</code> on populated paths so you don't ship emails or password hashes to the client.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>03 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population · 2/2</div><div class="num"><b>04</b> / 16</div></div>
+<h2>1. Feed: Posts with Author and Tags</h2><div class="body"><pre><span class="lang">json</span><code>[
+  {
+    <span class="s">"_id"</span>: <span class="s">"66f1…18"</span>,
+    <span class="s">"title"</span>: <span class="s">"Hello Mongoose"</span>,
+    <span class="s">"author"</span>: { <span class="s">"_id"</span>: <span class="s">"66f1…01"</span>, <span class="s">"name"</span>: <span class="s">"Ashu"</span> },
+    <span class="s">"tags"</span>: [{ <span class="s">"_id"</span>: <span class="s">"66f1…05"</span>, <span class="s">"name"</span>: <span class="s">"mongodb"</span> }],
+    <span class="s">"createdAt"</span>: <span class="s">"2026-09-25T10:00:00.000Z"</span>
+  }
+]</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>04 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population</div><div class="num"><b>05</b> / 16</div></div>
+<h2>2. Post Page: Nested Population of Comment Authors</h2><div class="body"><pre><span class="lang">js</span><code>async function getPost(slug) {
+  return Post.findOne({ slug, published: true })
+    .populate(<span class="s">'author'</span>, <span class="s">'name bio'</span>)
+    .populate(<span class="s">'tags'</span>, <span class="s">'name'</span>)
+    .populate({ path: <span class="s">'comments.author'</span>, select: <span class="s">'name'</span> })   <span class="c">// path inside the embedded array</span>
+    .orFail()
+    .lean();
+}</code></pre>
+<p>Four queries: the post, users (author), tags, and users (comment authors). Mongoose collects all comment-author ids into <strong>one</strong> <code>$in</code> query.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>05 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population · 1/2</div><div class="num"><b>06</b> / 16</div></div>
+<h2>3. Profile: Virtual Populate with Counts</h2><div class="body"><p>The <code>User</code> schema defines a virtual <code>posts</code> (see Schema). Add a count virtual next to it:</p>
+<pre><span class="lang">js</span><code>userSchema.virtual(<span class="s">'postCount'</span>, {
+  ref: <span class="s">'Post'</span>,
+  localField: <span class="s">'_id'</span>,
+  foreignField: <span class="s">'author'</span>,
+  count: true,
+  match: { published: true },
+});</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>06 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population · 2/2</div><div class="num"><b>07</b> / 16</div></div>
+<h2>3. Profile: Virtual Populate with Counts</h2><div class="body"><pre><span class="lang">js</span><code>async function getProfile(userId) {
+  return User.findById(userId)
+    .select(<span class="s">'name bio createdAt'</span>)
+    .populate({
+      path: <span class="s">'posts'</span>,
+      match: { published: true },
+      select: <span class="s">'title slug createdAt'</span>,
+      options: { sort: { createdAt: -1 }, limit: 5 },
+    })
+    .populate(<span class="s">'postCount'</span>)
+    .orFail();
+}
+
+const profile = await getProfile(id);
+profile.toJSON();   <span class="c">// { name, bio, posts: [...5 newest], postCount: 42, … }  (toJSON has virtuals: true)</span></code></pre>
+<p><code>options.limit</code> is fine here because there's only <strong>one</strong> parent. For many parents, use <code>perDocumentLimit</code>.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>07 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population</div><div class="num"><b>08</b> / 16</div></div>
+<h2>4. Many Parents, Limited Children: <code>perDocumentLimit</code></h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// Each author with their 3 latest posts</span>
+const authors = await User.find({ role: <span class="s">'admin'</span> })
+  .select(<span class="s">'name'</span>)
+  .populate({
+    path: <span class="s">'posts'</span>,
+    select: <span class="s">'title'</span>,
+    options: { sort: { createdAt: -1 } },
+    perDocumentLimit: 3,
+  });</code></pre>
+<table><thead><tr><th>Option</th><th>Limits</th></tr></thead><tbody><tr><td><code>options.limit: 3</code></td><td>3 posts <strong>in total</strong> across all authors (usually a bug)</td></tr><tr><td><code>perDocumentLimit: 3</code></td><td>3 posts <strong>per author</strong> (one query per author)</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>08 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population</div><div class="num"><b>09</b> / 16</div></div>
+<h2>5. Filtering Populated Data (and Its Limits)</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// Tags only if they're "featured"; others become null / are removed</span>
+await Post.find().populate({ path: <span class="s">'tags'</span>, match: { featured: true }, select: <span class="s">'name'</span> });</code></pre>
+<p><code>match</code> filters the <strong>populated</strong> documents, not the parents. To get "posts whose author is an admin", query the child's field or use <code>$lookup</code>:</p>
+<pre><span class="lang">js</span><code><span class="c">// Two steps with populate-style thinking</span>
+const adminIds = await User.find({ role: <span class="s">'admin'</span> }).distinct(<span class="s">'_id'</span>);
+const posts = await Post.find({ author: { $in: adminIds }, published: true }).populate(<span class="s">'author'</span>, <span class="s">'name'</span>);
+
+<span class="c">// One query with $lookup: see Aggregation</span></code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>09 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population</div><div class="num"><b>10</b> / 16</div></div>
+<h2>6. Populating After the Fact</h2><div class="body"><pre><span class="lang">js</span><code>const post = await Post.create({ title: <span class="s">'New'</span>, author: req.user.id, tags });
+await post.populate([{ path: <span class="s">'author'</span>, select: <span class="s">'name'</span> }, { path: <span class="s">'tags'</span>, select: <span class="s">'name'</span> }]);
+res.status(201).json(post);     <span class="c">// respond with names, not bare ids</span></code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>10 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population</div><div class="num"><b>11</b> / 16</div></div>
+<h2>7. Polymorphic References: Notifications with <code>refPath</code></h2><div class="body"><pre><span class="lang">js</span><code>const notificationSchema = new Schema(
+  {
+    user:        { type: Schema.Types.ObjectId, ref: <span class="s">'User'</span>, required: true, index: true },
+    type:        { type: String, enum: [<span class="s">'comment'</span>, <span class="s">'follow'</span>], required: true },
+    target:      { type: Schema.Types.ObjectId, required: true, refPath: <span class="s">'targetModel'</span> },
+    targetModel: { type: String, required: true, enum: [<span class="s">'Post'</span>, <span class="s">'User'</span>] },
+    read:        { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
+export const Notification = model(<span class="s">'Notification'</span>, notificationSchema);
+
+await Notification.create({ user: authorId, type: <span class="s">'comment'</span>, target: postId, targetModel: <span class="s">'Post'</span> });
+await Notification.create({ user: them, type: <span class="s">'follow'</span>, target: me, targetModel: <span class="s">'User'</span> });
+
+const inbox = await Notification.find({ user: me, read: false })
+  .sort({ createdAt: -1 })
+  .populate(<span class="s">'target'</span>, <span class="s">'title name'</span>)   <span class="c">// Post → title, User → name</span>
+  .lean();</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>11 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population</div><div class="num"><b>12</b> / 16</div></div>
+<h2>8. Handling Deleted References</h2><div class="body"><pre><span class="lang">js</span><code>const posts = await Post.find().populate(<span class="s">'author'</span>, <span class="s">'name'</span>).lean();
+posts.map((p) =&gt; ({ ...p, author: p.author ?? { name: <span class="s">'[deleted]'</span> } }));</code></pre>
+<p>A populated ref whose document is gone comes back as <code>null</code> (and missing items are dropped from arrays). There are no foreign keys, so clean up references when you delete (see Relationships).</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>12 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population</div><div class="num"><b>13</b> / 16</div></div>
+<h2>9. The N+1 Trap</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// ❌ 1 + N queries: 21 queries for 20 posts</span>
+const posts = await Post.find().limit(20);
+for (const p of posts) {
+  p.authorName = (await User.findById(p.author)).name;
+}
+
+<span class="c">// ✅ 2 queries</span>
+const posts = await Post.find().limit(20).populate(<span class="s">'author'</span>, <span class="s">'name'</span>);</code></pre>
+<p>The same happens with populate <strong>inside a loop</strong>, or GraphQL resolvers that populate per item. Batch with one populate (or DataLoader). See N+1 Problem.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>13 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population</div><div class="num"><b>14</b> / 16</div></div>
+<h2>When to Stop Populating</h2><div class="body"><table><thead><tr><th>Symptom</th><th>Better option</th></tr></thead><tbody><tr><td>You populate the same small fields on every read</td><td><strong>Extended reference</strong>: copy them into the document</td></tr><tr><td>You need to filter/sort parents by child fields</td><td>**<code>$lookup</code>** in an aggregation (Aggregation)</td></tr><tr><td>Populated data is always read with the parent and bounded</td><td><strong>Embed</strong> it</td></tr><tr><td>Deep chains (<code>a.b.c.d</code>)</td><td>Rethink the model; each level is another query</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>14 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Population</div><div class="num"><b>15</b> / 16</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li>Feed: <code>populate('author', 'name')</code> + <code>populate('tags', 'name')</code> + <code>.lean()</code> gives <strong>1 + one query per path</strong>, not per document.</li><li>Nested paths (<code>comments.author</code>) are batched into one <code>$in</code> query.</li><li>Profiles use <strong>virtual populate</strong> (<code>posts</code>, <code>postCount</code> with <code>count: true</code>); use **<code>perDocumentLimit</code>** for per-parent limits across many parents.</li><li><code>match</code> filters populated docs, not parents; use <code>$in</code> on ids or <code>$lookup</code> instead.</li><li><code>refPath</code> handles polymorphic targets; deleted refs become <code>null</code>. Always <code>select</code> populated fields and never populate in loops.</li></ul>
+<p>Next: Aggregation</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>15 / 16</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>16</b> / 16</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's <span class="g">Mongoose</span> Population.</h1><p class="src"><em>Sources: Mongoose Docs (populate). Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="06-mongoose-aggregation.html">Next deck: Mongoose Aggregation →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>16 / 16</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>

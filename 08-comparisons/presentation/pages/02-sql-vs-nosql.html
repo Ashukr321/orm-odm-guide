@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SQL vs NoSQL: Choosing · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 02 of 06</div><div class="num"><b>01</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>SQL vs NoSQL: <span class="g">Choosing</span></h1><div class="lead"><p>Making the call for a real system: scenario verdicts, checkout built both ways, operations and the JSONB middle ground.</p></div>
+<div class="meta"><span><b>11</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>01 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">SQL vs NoSQL: Choosing</div><div class="num"><b>02</b> / 13</div></div>
+<h2>How This Page Differs from the Foundation Page</h2><div class="body"><p>The fundamentals (the four NoSQL families, ACID vs BASE, CAP, scaling, myths) are in SQL vs NoSQL. This page is about <strong>making the decision</strong> for an actual product: scenario by scenario, with the same feature built both ways and the operational trade-offs that only show up in production.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>02 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">SQL vs NoSQL: Choosing</div><div class="num"><b>03</b> / 13</div></div>
+<h2>The Decision in One Table</h2><div class="body"><table><thead><tr><th>Question</th><th>Points to SQL</th><th>Points to NoSQL (document)</th></tr></thead><tbody><tr><td>Is data highly related (many-to-many everywhere)?</td><td>✅</td><td></td></tr><tr><td>Must multi-record writes be correct every time (money, stock)?</td><td>✅</td><td></td></tr><tr><td>Will people ask new, ad-hoc questions of the data?</td><td>✅</td><td></td></tr><tr><td>Is each record mostly read and written as one unit?</td><td></td><td>✅</td></tr><tr><td>Do record shapes vary a lot, or change weekly?</td><td></td><td>✅</td></tr><tr><td>Do you need horizontal write scaling beyond one big server?</td><td></td><td>✅</td></tr><tr><td>Is the team stronger in SQL or in MongoDB?</td><td>Either way, it matters</td><td></td></tr></tbody></table>
+<p>Default when unsure: <strong>PostgreSQL</strong>. It handles relational data well, <code>JSONB</code> covers document-shaped parts, and it scales further than most products ever need.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>03 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">SQL vs NoSQL: Choosing</div><div class="num"><b>04</b> / 13</div></div>
+<h2>Scenario Verdicts</h2><div class="body"><table><thead><tr><th>System</th><th>Verdict</th><th>Reasoning</th></tr></thead><tbody><tr><td><strong>Banking / payments / ledgers</strong></td><td>SQL</td><td>Strict ACID, constraints, auditing, reporting</td></tr><tr><td><strong>E-commerce</strong> (orders, inventory)</td><td>SQL core, maybe document catalog</td><td>Orders need transactions; catalogs vary per category</td></tr><tr><td><strong>CMS / blogs</strong></td><td>Document</td><td>Pages are nested blocks read as a whole</td></tr><tr><td><strong>Chat / messaging</strong></td><td>Wide-column or document</td><td>Huge append volume, partitioned by conversation</td></tr><tr><td><strong>IoT / metrics</strong></td><td>Time-series (Timescale, MongoDB time series, InfluxDB)</td><td>Time-bucketed writes, range reads</td></tr><tr><td><strong>Social graph / recommendations</strong></td><td>Graph (plus SQL for accounts)</td><td>Many-hop traversals</td></tr><tr><td><strong>Sessions, cache, rate limits</strong></td><td>Key-value (Redis)</td><td>Lookups by key, TTLs, sub-millisecond</td></tr><tr><td><strong>Analytics warehouse</strong></td><td>Columnar SQL (BigQuery, ClickHouse, Snowflake)</td><td>Aggregations over billions of rows</td></tr><tr><td><strong>SaaS app</strong> (users, teams, roles, billing)</td><td>SQL</td><td>Relations and constraints everywhere</td></tr></tbody></table>
+<p>Most real systems use <strong>several</strong> of these (polyglot persistence): for example, PostgreSQL for the core, Redis for caching, and a search engine for full-text.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>04 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">SQL vs NoSQL: Choosing · 1/2</div><div class="num"><b>05</b> / 13</div></div>
+<h2>The Same Feature Built Both Ways: Checkout</h2><div class="body"><p><strong>Requirement:</strong> create an order with line items, decrease stock for each product, and never oversell.</p>
+<p><strong>SQL (PostgreSQL + Prisma):</strong> normalized tables plus one transaction.</p>
+<pre><span class="lang">js</span><code>await prisma.$transaction(async (tx) =&gt; {
+  for (const item of cart) {
+    const { count } = await tx.product.updateMany({
+      where: { id: item.productId, stock: { gte: item.qty } },   <span class="c">// only if enough stock</span>
+      data: { stock: { decrement: item.qty } },
+    });
+    if (count === 0) throw new Error(<span class="s">`Out of stock: ${item.productId}`</span>);
+  }
+  await tx.order.create({
+    data: { userId, items: { create: cart.map((i) =&gt; ({ productId: i.productId, qty: i.qty, price: i.price })) } },
+  });
+});</code></pre>
+<p><strong>Document (MongoDB + Mongoose):</strong> the order embeds its items, so creating it is one atomic document write. Stock lives in other documents, so it still needs a transaction.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>05 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">SQL vs NoSQL: Choosing · 2/2</div><div class="num"><b>06</b> / 13</div></div>
+<h2>The Same Feature Built Both Ways: Checkout</h2><div class="body"><pre><span class="lang">js</span><code>await mongoose.connection.transaction(async (session) =&gt; {
+  for (const item of cart) {
+    const res = await Product.updateOne(
+      { _id: item.productId, stock: { $gte: item.qty } },
+      { $inc: { stock: -item.qty } },
+      { session }
+    );
+    if (res.modifiedCount === 0) throw new Error(<span class="s">`Out of stock: ${item.productId}`</span>);
+  }
+  await Order.create([{ user: userId, items: cart }], { session });   <span class="c">// items embedded</span>
+});</code></pre>
+<table><thead><tr><th></th><th>SQL</th><th>Document</th></tr></thead><tbody><tr><td>Order + items</td><td>2 tables, JOIN to read</td><td>1 document, 1 read</td></tr><tr><td>Stock safety</td><td>Conditional update in a transaction</td><td>Conditional update in a transaction</td></tr><tr><td>"Revenue per product last month"</td><td>One <code>GROUP BY</code></td><td><code>$unwind</code> + <code>$group</code> pipeline</td></tr><tr><td>Changing the item shape later</td><td>Migration</td><td>Add fields; old orders keep old shape</td></tr></tbody></table>
+<p>Both work. SQL is simpler for the <strong>reporting</strong> side; the document model is simpler for <strong>reading an order</strong>.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>06 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">SQL vs NoSQL: Choosing</div><div class="num"><b>07</b> / 13</div></div>
+<h2>Typical Operation Costs</h2><div class="body"><table><thead><tr><th>Operation</th><th>SQL (indexed)</th><th>Document (indexed)</th></tr></thead><tbody><tr><td>Read one entity with its children</td><td>JOIN or 2 queries</td><td><strong>1 document read</strong> (if embedded)</td></tr><tr><td>Update one field</td><td>1 row update</td><td>1 document update</td></tr><tr><td>Add a child</td><td>INSERT a row</td><td><code>$push</code> (atomic)</td></tr><tr><td>Query across entities (ad hoc)</td><td><strong>Flexible JOINs</strong></td><td>Needs <code>$lookup</code> or denormalized data</td></tr><tr><td>Aggregate over everything</td><td><strong>SQL shines</strong></td><td>Pipeline; fine, but verbose</td></tr><tr><td>Change the schema on a huge table</td><td>Migration (can be slow or locking)</td><td><strong>No migration</strong> for additive changes</td></tr><tr><td>Scale writes past one machine</td><td>Hard (partitioning, Citus, Vitess)</td><td><strong>Built-in sharding</strong></td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>07 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">SQL vs NoSQL: Choosing</div><div class="num"><b>08</b> / 13</div></div>
+<h2>Operational Differences (Production Reality)</h2><div class="body"><table><thead><tr><th>Concern</th><th>SQL (PostgreSQL / MySQL)</th><th>MongoDB</th></tr></thead><tbody><tr><td>Managed hosting</td><td>RDS, Cloud SQL, Neon, Supabase, PlanetScale</td><td>MongoDB Atlas, DocumentDB (compatible-ish)</td></tr><tr><td>Backups / point-in-time restore</td><td>Mature, standard</td><td>Mature on Atlas; plan it when self-hosting</td></tr><tr><td>High availability</td><td>Primary + replicas, failover</td><td>Replica sets built in</td></tr><tr><td>Horizontal scaling</td><td>Read replicas; sharding is extra work</td><td>Sharding built in (choose the shard key carefully)</td></tr><tr><td>Schema changes in production</td><td>Needs migration discipline (<code>CONCURRENTLY</code>, expand/contract)</td><td>Additive changes are free; reshapes need backfills</td></tr><tr><td>Tooling &amp; hiring</td><td>SQL is universal</td><td>Common, but less universal than SQL</td></tr><tr><td>Analytics / BI tools</td><td>Connect directly</td><td>Often need a connector or an ETL into a warehouse</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>08 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">SQL vs NoSQL: Choosing</div><div class="num"><b>09</b> / 13</div></div>
+<h2>The Middle Ground: PostgreSQL <code>JSONB</code></h2><div class="body"><p>Keep relational integrity for the core, and put the variable part in a document column.</p>
+<pre><span class="lang">prisma</span><code>model Product {
+  id         Int      @id @default(autoincrement())
+  name       String
+  price      Decimal  @db.Decimal(10, 2)
+  category   String
+  attributes Json     <span class="c">// { "ram": "16GB", "cpu": "M3" } or { "size": "M" }</span>
+  @@index([category])
+}</code></pre>
+<pre><span class="lang">js</span><code><span class="c">// Filter inside JSON with Prisma</span>
+await prisma.product.findMany({
+  where: { category: <span class="s">'laptop'</span>, attributes: { path: [<span class="s">'ram'</span>], equals: <span class="s">'16GB'</span> } },
+});</code></pre>
+<p>Add a GIN index on <code>attributes</code> in a migration for fast JSON queries. For many "we might need NoSQL" cases, this is enough.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>09 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">SQL vs NoSQL: Choosing</div><div class="num"><b>10</b> / 13</div></div>
+<h2>Red Flags You Picked the Wrong One</h2><div class="body"><table><thead><tr><th>You chose</th><th>Red flag</th></tr></thead><tbody><tr><td>MongoDB</td><td>Every read uses <code>populate</code> or <code>$lookup</code> across 3+ collections</td></tr><tr><td>MongoDB</td><td>You keep writing multi-document transactions for core flows</td></tr><tr><td>MongoDB</td><td>The team re-implements foreign-key checks in app code</td></tr><tr><td>SQL</td><td>Most columns are nullable because each row type uses different ones</td></tr><tr><td>SQL</td><td>You store large JSON blobs you never query relationally</td></tr><tr><td>SQL</td><td>Migrations on huge tables are blocking releases every week</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>10 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">SQL vs NoSQL: Choosing</div><div class="num"><b>11</b> / 13</div></div>
+<h2>Interview Questions</h2><div class="body"><p><strong>"Design the database for an e-commerce site."</strong> Relational core (users, orders, order_items, products, payments) in PostgreSQL for transactions and reporting. <code>JSONB</code> or a document store for the catalog's varying attributes, Redis for carts and sessions, and a search engine for product search.</p>
+<p><strong>"When would you choose MongoDB over PostgreSQL?"</strong> When data is naturally document-shaped and read as a unit, shapes vary or change often, and you expect to need horizontal write scaling, and when cross-entity joins and strict multi-record integrity are secondary.</p>
+<p><strong>"Can MongoDB do transactions?"</strong> Yes: multi-document ACID transactions on replica sets and sharded clusters. But the idiomatic design keeps related data in one document, so most writes are single-document atomic.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>11 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">SQL vs NoSQL: Choosing</div><div class="num"><b>12</b> / 13</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li>Decide by <strong>data shape, integrity needs, query flexibility and scale</strong>, not hype. Default to <strong>PostgreSQL</strong> when unsure.</li><li>Verdicts: SQL for money, orders, SaaS and reporting; documents for CMS/catalog-like nested data; key-value for caches; wide-column and time-series for massive appends.</li><li>The same feature (checkout) works in both. SQL wins at reporting; documents win at reading one aggregate.</li><li>**<code>JSONB</code>** in PostgreSQL covers many flexible-schema needs.</li><li>Real systems are <strong>polyglot</strong>; watch the red flags that show you picked the wrong fit.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>12 / 13</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>13</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's SQL vs NoSQL: <span class="g">Choosing</span>.</h1><p class="src"><em>Sources: PostgreSQL Docs (JSON types), MongoDB Docs (data modeling, transactions). Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="03-raw-sql-vs-orm.html">Next deck: Raw SQL vs ORM →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>13 / 13</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>

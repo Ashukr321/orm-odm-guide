@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prisma vs Sequelize · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 04 of 06</div><div class="num"><b>01</b> / 16</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1><span class="g">Prisma</span> vs <span class="g">Sequelize</span></h1><div class="lead"><p>Schema-first generated client vs code-first Active Record: models, queries, types, migrations and when to pick each.</p></div>
+<div class="meta"><span><b>14</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>01 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize</div><div class="num"><b>02</b> / 16</div></div>
+<h2>At a Glance</h2><div class="body"><table><thead><tr><th></th><th>Prisma</th><th>Sequelize</th></tr></thead><tbody><tr><td>First released</td><td>2019 (Prisma 2)</td><td>2011</td></tr><tr><td>Style</td><td><strong>Schema-first</strong>, generated client</td><td><strong>Code-first</strong>, Active Record</td></tr><tr><td>Models defined in</td><td><code>schema.prisma</code></td><td>JavaScript/TS classes (<code>Model.init</code>)</td></tr><tr><td>Returns</td><td><strong>Plain typed objects</strong></td><td>Model <strong>instances</strong> (<code>save()</code>, getters, dirty tracking)</td></tr><tr><td>TypeScript</td><td>Excellent, generated from the schema</td><td>Works, but types are largely hand-maintained</td></tr><tr><td>Migrations</td><td><strong>Generated</strong> from schema diffs (<code>migrate dev</code>)</td><td><strong>Hand-written</strong> with <code>sequelize-cli</code> (or <code>sync()</code>)</td></tr><tr><td>Relations</td><td><code>include</code> / <code>select</code>, nested writes</td><td><code>include</code>, association mixins (<code>getPosts</code>, <code>addTag</code>)</td></tr><tr><td>Hooks</td><td>Client extensions (query hooks)</td><td>Rich lifecycle hooks (<code>beforeCreate</code>, …)</td></tr><tr><td>Validation</td><td>Types only; use zod for rules</td><td>Built-in validators on attributes</td></tr><tr><td>Databases</td><td>PostgreSQL, MySQL, MariaDB, SQLite, SQL Server, CockroachDB (+ MongoDB)</td><td>PostgreSQL, MySQL, MariaDB, SQLite, SQL Server, (Db2, Snowflake)</td></tr><tr><td>Tooling</td><td>Prisma Studio, format/validate, VS Code extension</td><td>CLI</td></tr></tbody></table>
+<p>Hands-on: Prisma · Sequelize</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>02 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize</div><div class="num"><b>03</b> / 16</div></div>
+<h2>Philosophy</h2><div class="body"><ul><li><strong>Prisma</strong>: "the schema is the source of truth." You describe the data model once; Prisma generates the typed client <strong>and</strong> the migrations. Objects are plain data with no behavior.</li><li><strong>Sequelize</strong>: "models are classes." Each model defines its attributes, validations, hooks and associations in code, and instances know how to save themselves (<strong>Active Record</strong>).</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>03 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize · 1/2</div><div class="num"><b>04</b> / 16</div></div>
+<h2>Defining the Same Model</h2><div class="body"><pre><span class="lang">prisma</span><code><span class="c">// Prisma</span>
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(200)
+  published Boolean  @default(false)
+  authorId  Int      @map(<span class="s">"author_id"</span>)
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags      Tag[]
+  createdAt DateTime @default(now()) @map(<span class="s">"created_at"</span>)
+  @@index([authorId])
+  @@map(<span class="s">"posts"</span>)
+}</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>04 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize · 2/2</div><div class="num"><b>05</b> / 16</div></div>
+<h2>Defining the Same Model</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// Sequelize</span>
+class Post extends Model {
+  static associate(models) {
+    Post.belongsTo(models.User, { foreignKey: <span class="s">'authorId'</span>, as: <span class="s">'author'</span>, onDelete: <span class="s">'CASCADE'</span> });
+    Post.belongsToMany(models.Tag, { through: <span class="s">'post_tags'</span>, foreignKey: <span class="s">'postId'</span>, as: <span class="s">'tags'</span> });
+  }
+}
+Post.init({
+  title:     { type: DataTypes.STRING(200), allowNull: false, validate: { len: [3, 200] } },
+  published: { type: DataTypes.BOOLEAN, defaultValue: false },
+  authorId:  { type: DataTypes.INTEGER, allowNull: false },
+}, { sequelize, tableName: <span class="s">'posts'</span>, underscored: true, indexes: [{ fields: [<span class="s">'author_id'</span>] }] });
+<span class="c">// + a separate, hand-written migration that creates the same table</span></code></pre>
+<p>Prisma: <strong>one</strong> definition. Sequelize: a model <strong>and</strong> a migration you keep in sync by hand.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>05 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize · 1/3</div><div class="num"><b>06</b> / 16</div></div>
+<h2>Queries Side by Side</h2><div class="body"><p><strong>Filter, sort, paginate:</strong></p>
+<pre><span class="lang">js</span><code><span class="c">// Prisma</span>
+await prisma.post.findMany({
+  where: { published: true, title: { contains: <span class="s">'orm'</span>, mode: <span class="s">'insensitive'</span> } },
+  orderBy: { createdAt: <span class="s">'desc'</span> }, skip: 20, take: 10,
+});
+
+<span class="c">// Sequelize</span>
+await Post.findAll({
+  where: { published: true, title: { [Op.iLike]: <span class="s">'%orm%'</span> } },
+  order: [[<span class="s">'createdAt'</span>, <span class="s">'DESC'</span>]], offset: 20, limit: 10,
+});</code></pre>
+<p><strong>Relations:</strong></p>
+<pre><span class="lang">js</span><code><span class="c">// Prisma</span>
+await prisma.user.findUnique({ where: { id }, include: { posts: { where: { published: true } } } });
+
+<span class="c">// Sequelize</span>
+await User.findByPk(id, { include: [{ association: <span class="s">'posts'</span>, where: { published: true }, required: false }] });</code></pre>
+<p><strong>Nested create:</strong></p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>06 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize · 2/3</div><div class="num"><b>07</b> / 16</div></div>
+<h2>Queries Side by Side</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// Prisma</span>
+await prisma.user.create({ data: { email, posts: { create: [{ title: <span class="s">'Hi'</span> }] } } });
+
+<span class="c">// Sequelize</span>
+await User.create({ email, posts: [{ title: <span class="s">'Hi'</span> }] }, { include: [<span class="s">'posts'</span>] });</code></pre>
+<p><strong>Update:</strong></p>
+<pre><span class="lang">js</span><code><span class="c">// Prisma: explicit</span>
+await prisma.post.update({ where: { id }, data: { title: <span class="s">'New'</span> } });
+
+<span class="c">// Sequelize: instance dirty-checking (or static update)</span>
+const post = await Post.findByPk(id);
+post.title = <span class="s">'New'</span>;
+await post.save();</code></pre>
+<p><strong>Transactions:</strong></p>
+<pre><span class="lang">js</span><code><span class="c">// Prisma</span>
+await prisma.$transaction(async (tx) =&gt; { /* use tx */ });
+
+<span class="c">// Sequelize: pass { transaction: t } to every query (or enable CLS)</span>
+await sequelize.transaction(async (t) =&gt; { /* … { transaction: t } */ });</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>07 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize · 3/3</div><div class="num"><b>08</b> / 16</div></div>
+<h2>Queries Side by Side</h2><div class="body"><p><strong>Raw SQL:</strong></p>
+<pre><span class="lang">js</span><code>await prisma.$queryRaw<span class="s">`SELECT * FROM posts WHERE id = ${id}`</span>;
+await sequelize.query(<span class="s">'SELECT * FROM posts WHERE id = $id'</span>, { bind: { id }, type: QueryTypes.SELECT });</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>08 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize</div><div class="num"><b>09</b> / 16</div></div>
+<h2>Type Safety</h2><div class="body"><pre><span class="lang">ts</span><code><span class="c">// Prisma: result type follows the query shape</span>
+const u = await prisma.user.findUnique({ where: { id: 1 }, select: { email: true } });
+u?.email;   <span class="c">// string</span>
+u?.name;    <span class="c">// ❌ compile error: not selected</span>
+
+<span class="c">// Sequelize: you declare the attribute types yourself</span>
+class User extends Model&lt;InferAttributes&lt;User&gt;, InferCreationAttributes&lt;User&gt;&gt; {
+  declare id: CreationOptional&lt;number&gt;;
+  declare email: string;
+}
+const u = await User.findByPk(1, { attributes: [<span class="s">'email'</span>] });
+u?.name;    <span class="c">// compiles fine, but undefined at runtime</span></code></pre>
+<p>This is Prisma's biggest advantage in TypeScript codebases.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>09 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize</div><div class="num"><b>10</b> / 16</div></div>
+<h2>Migrations</h2><div class="body"><table><thead><tr><th></th><th>Prisma</th><th>Sequelize</th></tr></thead><tbody><tr><td>How</td><td>Edit the schema → <code>migrate dev</code> generates SQL</td><td>Write <code>up</code>/<code>down</code> JS with <code>queryInterface</code></td></tr><tr><td>Rollback</td><td>No auto <code>down</code>; roll forward, or write a fix migration</td><td><code>db:migrate:undo</code> runs <code>down</code></td></tr><tr><td>Drift detection</td><td>Yes (shadow database)</td><td>No</td></tr><tr><td>Risk</td><td>Renames become drop + add unless you edit the SQL</td><td>Model and migration can drift apart</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>10 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize</div><div class="num"><b>11</b> / 16</div></div>
+<h2>Performance Notes</h2><div class="body"><ul><li>Both generate reasonable SQL for everyday queries. Check the logs for hot paths either way.</li><li><strong>Prisma</strong> loads relations with separate queries by default (no huge JOIN result sets) and returns plain objects, so hydration is cheap.</li><li><strong>Sequelize</strong> uses JOINs for <code>include</code>; multiple <code>hasMany</code> includes can create large cartesian results (use <code>separate: true</code>). Model instances are heavier; use <code>raw: true</code> for read-only lists.</li><li>In serverless, bundle size and cold starts matter. Prisma 7's move to TypeScript driver adapters targets exactly this.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>11 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize</div><div class="num"><b>12</b> / 16</div></div>
+<h2>Strengths and Weaknesses</h2><div class="body"><table><thead><tr><th></th><th>Prisma</th><th>Sequelize</th></tr></thead><tbody><tr><td><strong>Strengths</strong></td><td>Best-in-class types, generated migrations, readable schema, great DX and docs, Studio</td><td>Very mature, flexible, rich hooks and validators, familiar Active Record, broad dialect support</td></tr><tr><td><strong>Weaknesses</strong></td><td>Less control over generated SQL, schema DSL to learn, no built-in validators, some advanced SQL needs raw queries</td><td>Weaker TypeScript story, hand-written migrations, model/migration drift, slower evolution in recent years</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>12 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize</div><div class="num"><b>13</b> / 16</div></div>
+<h2>When to Pick Which</h2><div class="body"><table><thead><tr><th>Pick <strong>Prisma</strong> when</th><th>Pick <strong>Sequelize</strong> when</th></tr></thead><tbody><tr><td>It's a new TypeScript project</td><td>You maintain an existing Sequelize codebase</td></tr><tr><td>You want types from DB to API</td><td>You want Active Record with hooks and validators on models</td></tr><tr><td>You'd rather not write migrations by hand</td><td>You need a dialect Prisma doesn't support</td></tr><tr><td>The team values DX and fast onboarding</td><td>The team is JS-first and knows Sequelize well</td></tr></tbody></table>
+<p>Also consider <strong>Drizzle</strong> (SQL-like, very light, excellent types) and <strong>TypeORM</strong> or <strong>MikroORM</strong> (decorator entities, Data Mapper, Unit of Work).</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>13 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize</div><div class="num"><b>14</b> / 16</div></div>
+<h2>Migrating from Sequelize to Prisma</h2><div class="body"><ol><li><code>npx prisma db pull</code>: generate <code>schema.prisma</code> from the existing database.</li><li>Clean up names with <code>@map</code> / <code>@@map</code>, and add missing relations.</li><li>Baseline migrations: <code>prisma migrate diff</code> + <code>migrate resolve --applied</code>.</li><li>Replace data access module by module, keeping Sequelize for the rest.</li><li>Move hooks and validators into services, zod schemas or client extensions.</li><li>Remove Sequelize when nothing imports it.</li></ol></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>14 / 16</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Prisma vs Sequelize</div><div class="num"><b>15</b> / 16</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li><strong>Prisma</strong> is schema-first: one <code>schema.prisma</code> generates a typed client and migrations, and queries return plain objects.</li><li><strong>Sequelize</strong> is code-first <strong>Active Record</strong>: model classes with validators, hooks, mixins and instance <code>save()</code>, plus hand-written migrations.</li><li>Prisma wins on <strong>type safety, migrations and DX</strong>. Sequelize wins on <strong>maturity, hooks/validators and dialect breadth</strong>.</li><li>New TypeScript project → Prisma (or Drizzle). Existing Sequelize app → keep it, or migrate incrementally with <code>prisma db pull</code>.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>15 / 16</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>16</b> / 16</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's <span class="g">Prisma</span> vs <span class="g">Sequelize</span>.</h1><p class="src"><em>Sources: Prisma Docs, Sequelize v6 Docs. Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="05-mongoose-vs-prisma.html">Next deck: Mongoose vs Prisma →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>Comparisons</div><div>16 / 16</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>

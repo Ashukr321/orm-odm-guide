@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mongoose Aggregation · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 06 of 07</div><div class="num"><b>01</b> / 15</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1><span class="g">Mongoose</span> Aggregation</h1><div class="lead"><p>Dashboard and analytics endpoints: $facet, leaderboards with $lookup, tag clouds, search, ranks and $merge.</p></div>
+<div class="meta"><span><b>13</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>01 / 15</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Aggregation</div><div class="num"><b>02</b> / 15</div></div>
+<h2>Mongoose Aggregation</h2><div class="body"><p>This page builds the blog's <strong>analytics and dashboard</strong> endpoints with aggregation pipelines. Stages and concepts are covered in Aggregation.</p>
+<pre><span class="lang">js</span><code>import mongoose from <span class="s">'mongoose'</span>;
+import { Post } from <span class="s">'./models/post.js'</span>;
+import { User } from <span class="s">'./models/user.js'</span>;
+import { Tag } from <span class="s">'./models/tag.js'</span>;
+
+const { Types } = mongoose;</code></pre>
+<blockquote><strong>Remember:</strong> <code>aggregate()</code> does <strong>not</strong> cast. Convert ids yourself (<code>new Types.ObjectId(id)</code>) and pass real <code>Date</code> objects.</blockquote></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>02 / 15</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Aggregation</div><div class="num"><b>03</b> / 15</div></div>
+<h2>1. Dashboard Overview in One Query (<code>$facet</code>)</h2><div class="body"><pre><span class="lang">js</span><code>async function dashboard() {
+  const [stats] = await Post.aggregate([
+    {
+      $facet: {
+        totals: [
+          {
+            $group: {
+              _id: null,
+              posts:     { $sum: 1 },
+              published: { $sum: { $cond: [<span class="s">'$published'</span>, 1, 0] } },
+              views:     { $sum: <span class="s">'$views'</span> },
+              comments:  { $sum: { $size: <span class="s">'$comments'</span> } },
+            },
+          },
+          { $project: { _id: 0 } },
+        ],
+        last7Days: [
+          { $match: { createdAt: { $gte: new Date(Date.now() - 7 * 864e5) } } },
+          { $count: <span class="s">'posts'</span> },
+        ],
+      },
+    },
+  ]);
+  return { ...stats.totals[0], newThisWeek: stats.last7Days[0]?.posts ?? 0 };
+}
+<span class="c">// { posts: 128, published: 97, views: 45210, comments: 812, newThisWeek: 6 }</span></code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>03 / 15</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Aggregation</div><div class="num"><b>04</b> / 15</div></div>
+<h2>2. Top Authors with Names (<code>$group</code> + <code>$lookup</code>)</h2><div class="body"><pre><span class="lang">js</span><code>async function topAuthors(limit = 5) {
+  return Post.aggregate([
+    { $match: { published: true } },
+    { $group: { _id: <span class="s">'$author'</span>, posts: { $sum: 1 }, views: { $sum: <span class="s">'$views'</span> } } },
+    { $sort: { views: -1 } },
+    { $limit: limit },                                   <span class="c">// limit BEFORE the join: fewer lookups</span>
+    { $lookup: { from: <span class="s">'users'</span>, localField: <span class="s">'_id'</span>, foreignField: <span class="s">'_id'</span>, as: <span class="s">'author'</span>,
+                 pipeline: [{ $project: { name: 1 } }] } },
+    { $unwind: <span class="s">'$author'</span> },
+    { $project: { _id: 0, authorId: <span class="s">'$_id'</span>, name: <span class="s">'$author.name'</span>, posts: 1, views: 1 } },
+  ]);
+}
+<span class="c">// [{ authorId, name: 'Ashu', posts: 42, views: 20110 }, …]</span></code></pre>
+<p><code>from</code> is the <strong>collection</strong> name (<code>users</code>), not the model name.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>04 / 15</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Aggregation</div><div class="num"><b>05</b> / 15</div></div>
+<h2>3. Tag Cloud (<code>$unwind</code> Arrays)</h2><div class="body"><pre><span class="lang">js</span><code>async function tagCloud() {
+  return Post.aggregate([
+    { $match: { published: true } },
+    { $unwind: <span class="s">'$tags'</span> },
+    { $group: { _id: <span class="s">'$tags'</span>, count: { $sum: 1 } } },
+    { $sort: { count: -1 } },
+    { $limit: 30 },
+    { $lookup: { from: <span class="s">'tags'</span>, localField: <span class="s">'_id'</span>, foreignField: <span class="s">'_id'</span>, as: <span class="s">'tag'</span> } },
+    { $unwind: <span class="s">'$tag'</span> },
+    { $project: { _id: 0, name: <span class="s">'$tag.name'</span>, count: 1 } },
+  ]);
+}</code></pre>
+<p>This can also <strong>recompute</strong> the stored <code>tag.postCount</code> values if they drift:</p>
+<pre><span class="lang">js</span><code>const counts = await Post.aggregate([
+  { $match: { published: true } }, { $unwind: <span class="s">'$tags'</span> }, { $group: { _id: <span class="s">'$tags'</span>, n: { $sum: 1 } } },
+]);
+await Tag.bulkWrite(counts.map((c) =&gt; ({ updateOne: { filter: { _id: c._id }, update: { $set: { postCount: c.n } } } })));</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>05 / 15</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Aggregation</div><div class="num"><b>06</b> / 15</div></div>
+<h2>4. Posts per Month (Dates)</h2><div class="body"><pre><span class="lang">js</span><code>async function postsPerMonth(year = 2026) {
+  return Post.aggregate([
+    { $match: { createdAt: { $gte: new Date(<span class="s">`${year}-01-01`</span>), $lt: new Date(<span class="s">`${year + 1}-01-01`</span>) } } },
+    {
+      $group: {
+        _id: { $month: <span class="s">'$createdAt'</span> },
+        posts: { $sum: 1 },
+        avgViews: { $avg: <span class="s">'$views'</span> },
+      },
+    },
+    { $sort: { _id: 1 } },
+    { $project: { _id: 0, month: <span class="s">'$_id'</span>, posts: 1, avgViews: { $round: [<span class="s">'$avgViews'</span>, 1] } } },
+  ]);
+}
+<span class="c">// [{ month: 1, posts: 14, avgViews: 310.5 }, …]</span></code></pre>
+<p>Add <code>timezone: 'Asia/Kolkata'</code> to <code>$month</code> (as <code>{ date: '$createdAt', timezone }</code>) if months should follow a local calendar instead of UTC.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>06 / 15</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Aggregation</div><div class="num"><b>07</b> / 15</div></div>
+<h2>5. Most Active Commenters (Embedded Arrays)</h2><div class="body"><pre><span class="lang">js</span><code>async function topCommenters(limit = 10) {
+  return Post.aggregate([
+    { $unwind: <span class="s">'$comments'</span> },
+    { $group: { _id: <span class="s">'$comments.author'</span>, comments: { $sum: 1 }, lastAt: { $max: <span class="s">'$comments.createdAt'</span> } } },
+    { $sort: { comments: -1 } },
+    { $limit: limit },
+    { $lookup: { from: <span class="s">'users'</span>, localField: <span class="s">'_id'</span>, foreignField: <span class="s">'_id'</span>, as: <span class="s">'user'</span>, pipeline: [{ $project: { name: 1 } }] } },
+    { $project: { _id: 0, name: { $first: <span class="s">'$user.name'</span> }, comments: 1, lastAt: 1 } },
+  ]);
+}</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>07 / 15</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Aggregation</div><div class="num"><b>08</b> / 15</div></div>
+<h2>6. One Author's Stats (Casting Ids Yourself)</h2><div class="body"><pre><span class="lang">js</span><code>async function authorStats(authorId) {
+  const [s] = await Post.aggregate([
+    { $match: { author: new Types.ObjectId(authorId) } },          <span class="c">// ← cast!</span>
+    {
+      $group: {
+        _id: null,
+        total:     { $sum: 1 },
+        published: { $sum: { $cond: [<span class="s">'$published'</span>, 1, 0] } },
+        views:     { $sum: <span class="s">'$views'</span> },
+        bestPost:  { $top: { sortBy: { views: -1 }, output: { title: <span class="s">'$title'</span>, views: <span class="s">'$views'</span> } } },
+      },
+    },
+  ]);
+  return s ?? { total: 0, published: 0, views: 0, bestPost: null };
+}</code></pre>
+<p>(<code>$top</code> needs MongoDB 5.2+.) Validate <code>authorId</code> with <code>mongoose.isValidObjectId()</code> first; <code>new Types.ObjectId('bad')</code> throws.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>08 / 15</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Aggregation</div><div class="num"><b>09</b> / 15</div></div>
+<h2>7. Search with Relevance and Pagination</h2><div class="body"><pre><span class="lang">js</span><code>async function search(q, page = 1, size = 10) {
+  const [res] = await Post.aggregate([
+    { $match: { $text: { $search: q }, published: true } },        <span class="c">// $text must be in the first $match</span>
+    { $addFields: { score: { $meta: <span class="s">'textScore'</span> } } },
+    { $sort: { score: -1 } },
+    {
+      $facet: {
+        items: [{ $skip: (page - 1) * size }, { $limit: size }, { $project: { title: 1, slug: 1, score: 1 } }],
+        total: [{ $count: <span class="s">'n'</span> }],
+      },
+    },
+  ]);
+  return { items: res.items, total: res.total[0]?.n ?? 0 };
+}</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>09 / 15</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Aggregation</div><div class="num"><b>10</b> / 15</div></div>
+<h2>8. Per-Author Ranking (<code>$setWindowFields</code>)</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// Each author's 3 most-viewed posts</span>
+await Post.aggregate([
+  { $match: { published: true } },
+  { $setWindowFields: { partitionBy: <span class="s">'$author'</span>, sortBy: { views: -1 }, output: { rank: { $rank: {} } } } },
+  { $match: { rank: { $lte: 3 } } },
+  { $project: { title: 1, author: 1, views: 1, rank: 1 } },
+]);</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>10 / 15</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Aggregation</div><div class="num"><b>11</b> / 15</div></div>
+<h2>9. Pre-Computed Daily Stats (<code>$merge</code>)</h2><div class="body"><p>Dashboards that are opened often shouldn't re-scan all posts. Compute into a summary collection on a schedule (for example, nightly):</p>
+<pre><span class="lang">js</span><code>await Post.aggregate([
+  { $match: { createdAt: { $gte: startOfYesterday, $lt: startOfToday } } },
+  { $group: { _id: { $dateToString: { format: <span class="s">'%Y-%m-%d'</span>, date: <span class="s">'$createdAt'</span> } },
+              posts: { $sum: 1 }, views: { $sum: <span class="s">'$views'</span> } } },
+  { $merge: { into: <span class="s">'daily_stats'</span>, on: <span class="s">'_id'</span>, whenMatched: <span class="s">'replace'</span>, whenNotMatched: <span class="s">'insert'</span> } },
+]);
+
+<span class="c">// The dashboard reads the small collection</span>
+const stats = await mongoose.connection.db.collection(<span class="s">'daily_stats'</span>).find().sort({ _id: -1 }).limit(30).toArray();</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>11 / 15</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Aggregation</div><div class="num"><b>12</b> / 15</div></div>
+<h2>10. Exposing It: a Stats Router</h2><div class="body"><pre><span class="lang">js</span><code>import { Router } from <span class="s">'express'</span>;
+import { isValidObjectId } from <span class="s">'mongoose'</span>;
+
+export const stats = Router();
+
+stats.get(<span class="s">'/overview'</span>, async (_req, res) =&gt; res.json(await dashboard()));
+stats.get(<span class="s">'/top-authors'</span>, async (req, res) =&gt; res.json(await topAuthors(Math.min(Number(req.query.limit) || 5, 50))));
+stats.get(<span class="s">'/tags'</span>, async (_req, res) =&gt; res.json(await tagCloud()));
+stats.get(<span class="s">'/authors/:id'</span>, async (req, res) =&gt; {
+  if (!isValidObjectId(req.params.id)) return res.sendStatus(404);
+  res.json(await authorStats(req.params.id));
+});</code></pre>
+<p>Cap client-supplied limits, and cache expensive endpoints (for example, for 60 seconds) if they're public.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>12 / 15</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Aggregation</div><div class="num"><b>13</b> / 15</div></div>
+<h2>Performance Checklist</h2><div class="body"><table><thead><tr><th>Do</th><th>Why</th></tr></thead><tbody><tr><td><code>$match</code> first (and <code>$sort</code> early)</td><td>Only the start of the pipeline can use indexes</td></tr><tr><td><code>$limit</code> before <code>$lookup</code></td><td>Join 5 documents, not 50,000</td></tr><tr><td><code>$project</code> / <code>pipeline</code> inside <code>$lookup</code></td><td>Move less data</td></tr><tr><td>Check with <code>.explain('executionStats')</code></td><td>See whether an index is used</td></tr><tr><td><code>allowDiskUse(true)</code> for big sorts/groups on older servers</td><td>100 MB per-stage memory limit</td></tr><tr><td><code>$merge</code> into summary collections</td><td>Don't recompute heavy stats per request</td></tr><tr><td>Aggregate middleware for soft delete</td><td><code>pre('find')</code> hooks don't apply to <code>aggregate()</code></td></tr></tbody></table>
+<pre><span class="lang">js</span><code>const plan = await Post.aggregate([{ $match: { published: true } }, { $sort: { createdAt: -1 } }, { $limit: 10 }])
+  .explain(<span class="s">'executionStats'</span>);</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>13 / 15</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Mongoose Aggregation</div><div class="num"><b>14</b> / 15</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li>**<code>$facet</code>** returns several results (totals, recent counts, page + total) in one query.</li><li>**<code>$group</code> + <code>$sort</code> + <code>$limit</code> + <code>$lookup</code><strong> builds leaderboards; limit </strong>before** joining, and <code>from</code> is the collection name.</li><li>**<code>$unwind</code>** turns arrays (tags, embedded comments) into rows for grouping.</li><li><code>aggregate()</code> <strong>doesn't cast</strong>: use <code>new Types.ObjectId(id)</code> and real <code>Date</code>s, and validate ids first.</li><li><code>$text</code> + <code>textScore</code> for ranked search, <code>$setWindowFields</code> for per-group ranks, and **<code>$merge</code>** to pre-compute dashboards.</li><li>Performance: <code>$match</code> first, <code>$project</code> early, <code>explain()</code>, and cap client limits.</li></ul>
+<p>Compare: Prisma Advanced Queries</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>14 / 15</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>15</b> / 15</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's <span class="g">Mongoose</span> Aggregation.</h1><p class="src"><em>Sources: MongoDB Docs (aggregation pipeline), Mongoose Docs (aggregate). Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="references.html">Next deck: References →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM Examples</div><div>15 / 15</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>
