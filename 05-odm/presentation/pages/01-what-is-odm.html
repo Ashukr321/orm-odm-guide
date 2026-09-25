@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What Is an ODM? · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 01 of 08</div><div class="num"><b>01</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>What Is an <span class="g">ODM</span>?</h1><div class="lead"><p>Object-Document Mapping: schemas, validation and relationships on top of a schemaless document database.</p></div>
+<div class="meta"><span><b>11</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>01 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">What Is an ODM? · 1/2</div><div class="num"><b>02</b> / 13</div></div>
+<h2>Definition</h2><div class="body"><p>An <strong>ODM (Object-Document Mapper)</strong> is a library that maps <strong>documents in a document database</strong> (like MongoDB) to <strong>objects in your code</strong>. It adds the things the raw driver doesn't give you: <strong>schemas, validation, defaults, type casting, relationships (references), middleware and a model API</strong>.</p>
+<pre><code>Your code (objects)  ⇄  ODM (Mongoose)  ⇄  Driver (mongodb)  ⇄  MongoDB (BSON documents)</code></pre>
+<table><thead><tr><th>In your code</th><th>In the database</th></tr></thead><tbody><tr><td>Model (<code>User</code>)</td><td>Collection (<code>users</code>)</td></tr><tr><td>Document / instance (<code>user</code>)</td><td>Document (a BSON object)</td></tr><tr><td>Property (<code>user.email</code>)</td><td>Field (<code>email</code>)</td></tr><tr><td>Nested object / array (<code>user.address</code>, <code>post.comments</code>)</td><td>Embedded document / array</td></tr><tr><td>Reference (<code>post.author</code>)</td><td><code>ObjectId</code> stored in a field (<code>author: ObjectId("…")</code>)</td></tr><tr><td>Method call (<code>User.create()</code>)</td><td>Driver command (<code>insertOne</code>)</td></tr></tbody></table>
+<blockquote>The ODM is to a document database what an ORM is to a relational database. It doesn't write SQL. It builds <strong>driver commands</strong> (<code>find</code>, <code>insertOne</code>, <code>updateOne</code>, <code>aggregate</code>) and turns BSON documents into objects.</blockquote></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>02 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">What Is an ODM? · 2/2</div><div class="num"><b>03</b> / 13</div></div>
+<h2>Definition</h2><div class="body"><p>Background: Document Database · What Is ORM</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>03 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">What Is an ODM? · 1/2</div><div class="num"><b>04</b> / 13</div></div>
+<h2>Without an ODM vs With an ODM</h2><div class="body"><p><strong>Task:</strong> save a user safely and read the 10 newest posts with their authors.</p>
+<p>**Without an ODM: the raw <code>mongodb</code> driver**</p>
+<pre><span class="lang">js</span><code>const { MongoClient, ObjectId } = require(<span class="s">'mongodb'</span>);
+const client = new MongoClient(process.env.MONGODB_URI);
+const db = client.db(<span class="s">'blog'</span>);
+
+<span class="c">// No schema: nothing stops a typo, a missing field or a wrong type</span>
+await db.collection(<span class="s">'users'</span>).insertOne({
+  emial: <span class="s">'ASHU@EXAMPLE.COM'</span>,   <span class="c">// typo, not lower-cased, no validation</span>
+  age: <span class="s">'27'</span>,                   <span class="c">// string instead of number</span>
+});
+
+<span class="c">// "Joins" by hand</span>
+const posts = await db.collection(<span class="s">'posts'</span>).find().sort({ createdAt: -1 }).limit(10).toArray();
+const authorIds = [...new Set(posts.map((p) =&gt; p.author.toString()))].map((id) =&gt; new ObjectId(id));
+const authors = await db.collection(<span class="s">'users'</span>).find({ _id: { $in: authorIds } }).toArray();
+const byId = new Map(authors.map((a) =&gt; [a._id.toString(), a]));
+posts.forEach((p) =&gt; (p.author = byId.get(p.author.toString())));</code></pre>
+<p><strong>With an ODM (Mongoose)</strong></p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>04 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">What Is an ODM? · 2/2</div><div class="num"><b>05</b> / 13</div></div>
+<h2>Without an ODM vs With an ODM</h2><div class="body"><pre><span class="lang">js</span><code>const userSchema = new Schema({
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  age:   { type: Number, min: 13 },
+}, { timestamps: true });
+const User = model(<span class="s">'User'</span>, userSchema);
+
+await User.create({ email: <span class="s">'ASHU@EXAMPLE.COM'</span>, age: <span class="s">'27'</span> });
+<span class="c">// → email stored as 'ashu@example.com', age cast to 27, typos rejected (strict mode)</span>
+
+const posts = await Post.find()
+  .sort({ createdAt: -1 })
+  .limit(10)
+  .populate(<span class="s">'author'</span>, <span class="s">'name email'</span>);   <span class="c">// the "join", done for you</span></code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>05 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">What Is an ODM?</div><div class="num"><b>06</b> / 13</div></div>
+<h2>The Problem ODMs Solve</h2><div class="body"><p>MongoDB is <strong>schemaless</strong>: any document can have any shape. That's flexible, but in an application it quickly leads to messy data.</p>
+<table><thead><tr><th>Problem with raw documents</th><th>What the ODM adds</th></tr></thead><tbody><tr><td>Any shape can be saved (typos, missing fields)</td><td><strong>Schema</strong> + strict mode</td></tr><tr><td>No type safety (<code>'27'</code> vs <code>27</code>)</td><td><strong>Casting</strong> to the declared type</td></tr><tr><td>No business rules</td><td><strong>Validation</strong> (<code>required</code>, <code>min</code>, <code>match</code>, custom)</td></tr><tr><td>Repeated defaults and timestamps</td><td><strong>Defaults</strong>, <code>timestamps: true</code></td></tr><tr><td>No built-in joins across collections</td><td>**References + <code>populate()</code>**</td></tr><tr><td>Logic scattered across the codebase</td><td><strong>Middleware (hooks), methods, statics, virtuals</strong></td></tr><tr><td>Raw <code>ObjectId</code>/BSON handling</td><td>Automatic <code>ObjectId</code> casting and conversion</td></tr></tbody></table>
+<blockquote>The database stays flexible. The <strong>application</strong> gets a schema.</blockquote></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>06 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">What Is an ODM?</div><div class="num"><b>07</b> / 13</div></div>
+<h2>How an ODM Works (the Short Version)</h2><div class="body"><pre><code>1. Define a schema  →  new Schema({ email: { type: String, required: true } })
+2. Compile a model  →  const User = model('User', userSchema)   <span class="c">// → "users" collection</span>
+3. Call the API     →  User.find({ age: { $gte: 18 } })
+4. Cast &amp; validate  →  '18' → 18, run validators, apply defaults
+5. Run via driver   →  db.users.find({ age: { $gte: 18 } })
+6. Hydrate          →  BSON → Mongoose documents (with methods, virtuals, change tracking)</code></pre>
+<p>Deep dive: How ODM Works</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>07 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">What Is an ODM? · 1/2</div><div class="num"><b>08</b> / 13</div></div>
+<h2>Embedding vs Referencing</h2><div class="body"><p>The biggest modelling decision in a document database. ODMs support both.</p>
+<p><strong>Embedding</strong>: store related data <strong>inside</strong> the parent document.</p>
+<pre><span class="lang">js</span><code>const postSchema = new Schema({
+  title: String,
+  comments: [{ body: String, author: String, createdAt: { type: Date, default: Date.now } }],
+});
+<span class="c">// One read returns the post and all its comments.</span></code></pre>
+<p><strong>Referencing</strong>: store an <code>ObjectId</code> and look the other document up.</p>
+<pre><span class="lang">js</span><code>const postSchema = new Schema({
+  title: String,
+  author: { type: Schema.Types.ObjectId, ref: <span class="s">'User'</span> },
+});
+await Post.findById(id).populate(<span class="s">'author'</span>);</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>08 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">What Is an ODM? · 2/2</div><div class="num"><b>09</b> / 13</div></div>
+<h2>Embedding vs Referencing</h2><div class="body"><table><thead><tr><th></th><th>Embed</th><th>Reference</th></tr></thead><tbody><tr><td>Read pattern</td><td>Always read together</td><td>Read separately or sometimes</td></tr><tr><td>Size</td><td>Small, bounded (address, last 5 comments)</td><td>Large or unbounded (all orders)</td></tr><tr><td>Updates</td><td>Child rarely changes independently</td><td>Child is updated on its own</td></tr><tr><td>Example</td><td><code>user.address</code>, <code>order.items</code></td><td><code>post.author</code>, <code>order.customer</code></td></tr></tbody></table>
+<blockquote>Rule of thumb: <strong>"data that is accessed together should be stored together"</strong>, but never let an array grow without limit (16 MB document cap).</blockquote></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>09 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">What Is an ODM?</div><div class="num"><b>10</b> / 13</div></div>
+<h2>The ODM Landscape</h2><div class="body"><table><thead><tr><th>ODM</th><th>Language</th><th>Notes</th></tr></thead><tbody><tr><td><strong>Mongoose</strong></td><td>Node.js</td><td>The standard MongoDB ODM: schemas, validation, middleware, populate</td></tr><tr><td><strong>Typegoose</strong></td><td>TypeScript</td><td>Define Mongoose models with TS classes and decorators</td></tr><tr><td><strong>Prisma (MongoDB connector)</strong></td><td>Node.js / TS</td><td>Schema-first typed client; check your Prisma version's MongoDB support</td></tr><tr><td><strong>Papr</strong></td><td>Node.js / TS</td><td>Lightweight; uses MongoDB's built-in JSON Schema validation</td></tr><tr><td><strong>Beanie / ODMantic</strong></td><td>Python</td><td>Async ODMs built on Pydantic</td></tr><tr><td><strong>MongoEngine</strong></td><td>Python</td><td>Classic synchronous ODM</td></tr><tr><td><strong>Spring Data MongoDB / Morphia</strong></td><td>Java</td><td>Annotation-based mapping</td></tr><tr><td><strong>Doctrine MongoDB ODM</strong></td><td>PHP</td><td>Data Mapper style</td></tr><tr><td><strong>Mongoid</strong></td><td>Ruby</td><td>ActiveRecord-like API for MongoDB</td></tr></tbody></table>
+<p>Hands-on: Mongoose Setup</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>10 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">What Is an ODM?</div><div class="num"><b>11</b> / 13</div></div>
+<h2>What an ODM Does <em>Not</em> Do for You</h2><div class="body"><ul><li><strong>It doesn't design your documents.</strong> Embed vs reference is still your call.</li><li>**It doesn't make <code>populate()</code> a real join.** <code>populate</code> runs <strong>extra queries</strong>; misuse causes N+1-style slowness.</li><li><strong>It doesn't create the right indexes</strong> for your queries. You declare them.</li><li><strong>Schema rules live in the app.</strong> Another service writing to the same collection with the raw driver skips them (unless you also use DB-level JSON Schema validation).</li><li><strong>It doesn't replace knowing MongoDB</strong>: query operators, aggregation pipelines, <code>explain()</code>.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>11 / 13</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">What Is an ODM?</div><div class="num"><b>12</b> / 13</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li>An <strong>ODM</strong> maps collections ↔ models, documents ↔ objects, fields ↔ properties, and <code>ObjectId</code> refs ↔ related objects.</li><li>It adds **schemas, casting, validation, defaults, middleware, virtuals and <code>populate()</code>** on top of the schemaless driver.</li><li>Key modelling choice: <strong>embed</strong> (read together, bounded) vs <strong>reference</strong> (large, unbounded or independently updated).</li><li><strong>Mongoose</strong> is the standard Node.js ODM; Typegoose adds TS classes.</li><li>Schema rules are app-level, <code>populate</code> is extra queries, and indexes are your job.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>12 / 13</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>13</b> / 13</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's What Is an <span class="g">ODM</span>?.</h1><p class="src"><em>Sources: Mongoose Docs, MongoDB Docs (data modeling). Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="02-why-odm.html">Next deck: Why Use an ODM? →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>13 / 13</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>

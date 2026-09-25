@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Advantages of ODMs · devflow_ai</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--bg:#0b0806;--bg-secondary:#140d08;--glow-1:#f97316;--glow-2:#3b82f6;--accent-primary:#fb923c;--accent-secondary:#60a5fa;--accent-tertiary:#fbbf24;--danger:#f87171;--ok:#4ade80;--text-primary:#f6f2ee;--text-secondary:#c9bcb0;--text-muted:#7d7065;--border:rgba(255,255,255,.09);--surface:rgba(255,255,255,.035);--code-bg:#080604;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans)}
+a{color:var(--accent-secondary)}
+
+html,body{height:100%;overflow:hidden}
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:64px 88px 84px;overflow:hidden;border-radius:18px;
+ background:radial-gradient(circle at 88% 6%,rgba(249,115,22,.16),transparent 42%),radial-gradient(circle at 4% 96%,rgba(59,130,246,.12),transparent 42%),linear-gradient(170deg,var(--bg-secondary),var(--bg) 60%);border:1px solid var(--border)}
+.slide.on{display:flex}
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%);mask-image:radial-gradient(circle at 85% 8%,#000,transparent 50%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0}
+.kicker{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent-primary);display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:26px;height:3px;background:var(--accent-primary);border-radius:2px}
+.num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text-muted)}.num b{color:var(--text-primary)}
+h2{font-size:54px;font-weight:900;letter-spacing:-1.6px;line-height:1.08;margin-top:22px;position:relative;flex-shrink:0}
+h2::after{content:'';display:block;width:90px;height:3px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary))}
+.body{position:relative;margin-top:26px;flex:1;min-height:0;font-size:calc(25px*var(--fs,1));line-height:1.5;color:var(--text-secondary);display:flex;flex-direction:column;gap:.75em;overflow:hidden}
+.body.scroll{overflow:auto}
+.body strong{color:var(--text-primary)}
+.body code{font-family:var(--mono);font-size:.86em;color:var(--accent-tertiary);background:rgba(251,191,36,.07);padding:.08em .35em;border-radius:6px}
+.body ul,.body ol{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+.body li::marker{color:var(--accent-primary)}
+.body h4{color:var(--text-primary);font-size:1.05em}
+blockquote{border-left:4px solid var(--accent-primary);background:rgba(251,146,60,.07);padding:.7em 1em;border-radius:0 14px 14px 0;color:var(--text-primary);font-style:italic}
+pre{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:.9em 1.1em;font-family:Consolas,'Cascadia Mono','SF Mono',Menlo,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-size:.74em;line-height:1.55;color:var(--text-secondary);white-space:pre;overflow:hidden;flex-shrink:0}
+.body pre code{font:inherit;color:inherit;background:none;padding:0;border-radius:0}
+pre .lang{position:absolute;top:.5em;right:.9em;font-size:.75em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+pre .s{color:var(--accent-tertiary)}pre .c{color:var(--text-muted);font-style:italic}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.8em;border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+th{font-family:var(--mono);font-size:.82em;letter-spacing:1px;text-transform:uppercase;text-align:left;color:var(--accent-primary);background:rgba(251,146,60,.09);padding:.6em .8em}
+td{padding:.55em .8em;border-top:1px solid var(--border);vertical-align:top}
+td:first-child{color:var(--text-primary);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--surface)}
+.cover{justify-content:center}
+.cover .kicker{margin-bottom:26px}
+.cover h1{font-size:92px;font-weight:900;letter-spacing:-3px;line-height:1.02;max-width:1300px}
+.cover h1 .g,.outro h1 .g{background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .lead{margin-top:32px;font-size:28px;line-height:1.5;color:var(--text-secondary);max-width:1200px}
+.cover .lead p+p{margin-top:.6em}.cover .lead code{font-family:var(--mono);color:var(--accent-tertiary)}
+.meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span{font-family:var(--mono);font-size:19px;font-weight:700;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.meta b{color:var(--accent-primary)}
+.outro{justify-content:center}
+.outro h1{font-size:76px;font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.outro .src{margin-top:28px;font-size:21px;color:var(--text-muted);max-width:1250px;line-height:1.5}
+.outro .actions{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:21px;font-weight:800;letter-spacing:1px;text-decoration:none;padding:18px 28px;border-radius:14px;border:1px solid var(--border);color:var(--text-primary);background:var(--surface)}
+.btn.primary{background:linear-gradient(120deg,var(--glow-1),var(--accent-tertiary));color:var(--bg);border:none}
+.foot{position:absolute;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text-muted)}
+.foot .brand{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--text-primary)}.foot .brand span{color:var(--accent-primary)}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:.25;transition:opacity .2s;z-index:5}
+.hud:hover,.hud:focus-within{opacity:1}
+.hud button,.hud a{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text-primary);background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.hud button:focus-visible,.hud a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent-secondary);outline-offset:2px}
+.hud .count{font-family:var(--mono);font-size:14px;color:var(--text-secondary);min-width:70px;text-align:center}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),var(--accent-tertiary));transition:width .25s;z-index:5}
+@media print{html,body{overflow:visible;height:auto}.viewport{position:static;display:block}.stage{position:static;width:auto;height:auto;transform:none!important}.slide{height:900px}.slide{display:flex!important;position:relative;page-break-after:always;border-radius:0}.hud,.bar{display:none}}
+</style></head>
+<body><div class="bar"></div><main class="viewport"><div class="stage">
+<section class="slide cover"><div class="top"><div class="kicker">Deck 03 of 08</div><div class="num"><b>01</b> / 14</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1><span class="g">Advantages</span> of ODMs</h1><div class="lead"><p>Schema, validation, casting, defaults, populate, middleware, a rich model API and TypeScript types.</p></div>
+<div class="meta"><span><b>12</b> slides</span><span>← → to navigate</span><span>F for fullscreen</span></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>01 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Advantages of ODMs</div><div class="num"><b>02</b> / 14</div></div>
+<h2>At a Glance</h2><div class="body"><table><thead><tr><th>Advantage</th><th>One-line explanation</th></tr></thead><tbody><tr><td>Schema &amp; structure</td><td>One definition of each document's shape</td></tr><tr><td>Validation</td><td>Bad data is rejected before it reaches the database</td></tr><tr><td>Casting</td><td>Values are converted to the declared types</td></tr><tr><td>Defaults &amp; timestamps</td><td>Common fields filled in automatically</td></tr><tr><td>Relationships</td><td><code>populate()</code> resolves references for you</td></tr><tr><td>Middleware</td><td>Hooks for hashing, slugs, auditing, cascades</td></tr><tr><td>Rich model API</td><td>Methods, statics, virtuals, query helpers</td></tr><tr><td>Flexible schema evolution</td><td>Add fields without migrations</td></tr><tr><td>Productivity &amp; consistency</td><td>Less boilerplate, one style across the team</td></tr><tr><td>TypeScript support</td><td>Typed models (inferred types, Typegoose)</td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>02 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Advantages of ODMs</div><div class="num"><b>03</b> / 14</div></div>
+<h2>1. Schema and Structure</h2><div class="body"><pre><span class="lang">js</span><code>const postSchema = new Schema({
+  title:     { type: String, required: true, trim: true, maxlength: 200 },
+  slug:      { type: String, unique: true },
+  body:      String,
+  tags:      [String],
+  published: { type: Boolean, default: false },
+  author:    { type: Schema.Types.ObjectId, ref: <span class="s">'User'</span>, required: true },
+}, { timestamps: true });</code></pre>
+<p>Anyone on the team can open one file and see exactly what a post looks like. <strong>Strict mode</strong> (on by default) silently drops fields that aren't in the schema, so typos never reach the database.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>03 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Advantages of ODMs</div><div class="num"><b>04</b> / 14</div></div>
+<h2>2. Validation</h2><div class="body"><pre><span class="lang">js</span><code>const userSchema = new Schema({
+  email: { type: String, required: [true, <span class="s">'Email is required'</span>], match: /^\S+@\S+\.\S+$/ },
+  age:   { type: Number, min: [13, <span class="s">'Must be at least 13'</span>] },
+  role:  { type: String, enum: [<span class="s">'user'</span>, <span class="s">'admin'</span>] },
+  username: {
+    type: String,
+    validate: {
+      validator: (v) =&gt; /^[a-z0-9_]{3,20}$/.test(v),
+      message: (p) =&gt; <span class="s">`${p.value} is not a valid username`</span>,
+    },
+  },
+});
+
+try {
+  await User.create({ email: <span class="s">'nope'</span>, age: 10 });
+} catch (err) {
+  err.name;                 <span class="c">// 'ValidationError'</span>
+  err.errors.email.message; <span class="c">// 'Path `email` is invalid (nope).'</span>
+  err.errors.age.message;   <span class="c">// 'Must be at least 13'</span>
+}</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>04 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Advantages of ODMs</div><div class="num"><b>05</b> / 14</div></div>
+<h2>3. Automatic Casting</h2><div class="body"><pre><span class="lang">js</span><code>await Post.find({ author: req.params.userId });   <span class="c">// string → ObjectId</span>
+await User.create({ age: <span class="s">'27'</span> });                 <span class="c">// '27' → 27</span>
+await Event.create({ at: <span class="s">'2026-09-25'</span> });         <span class="c">// string → Date</span></code></pre>
+<p>With the raw driver you'd write <code>new ObjectId(id)</code>, <code>Number(x)</code> and <code>new Date(s)</code> everywhere, and forget one of them.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>05 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Advantages of ODMs</div><div class="num"><b>06</b> / 14</div></div>
+<h2>4. Defaults and Timestamps</h2><div class="body"><pre><span class="lang">js</span><code>new Schema({
+  status:  { type: String, default: <span class="s">'draft'</span> },
+  views:   { type: Number, default: 0 },
+  slug:    { type: String, default: () =&gt; crypto.randomUUID() },
+}, { timestamps: true });   <span class="c">// createdAt + updatedAt managed for you</span></code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>06 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Advantages of ODMs</div><div class="num"><b>07</b> / 14</div></div>
+<h2>5. Relationships with <code>populate()</code></h2><div class="body"><pre><span class="lang">js</span><code>const post = await Post.findById(id)
+  .populate(<span class="s">'author'</span>, <span class="s">'name email'</span>)
+  .populate({ path: <span class="s">'comments.author'</span>, select: <span class="s">'name'</span> });</code></pre>
+<p>One line replaces "collect IDs → <code>$in</code> query → map results back". See Population.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>07 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Advantages of ODMs</div><div class="num"><b>08</b> / 14</div></div>
+<h2>6. Middleware (Hooks)</h2><div class="body"><pre><span class="lang">js</span><code>userSchema.pre(<span class="s">'save'</span>, async function () {
+  if (this.isModified(<span class="s">'password'</span>)) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+});
+
+postSchema.pre(<span class="s">'save'</span>, function () {
+  if (this.isModified(<span class="s">'title'</span>)) this.slug = slugify(this.title);
+});
+
+userSchema.post(<span class="s">'findOneAndDelete'</span>, async function (doc) {
+  if (doc) await Post.deleteMany({ author: doc._id });   <span class="c">// cascade</span>
+});</code></pre>
+<p>Logic that must <em>always</em> run lives in one place. See Middleware.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>08 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Advantages of ODMs</div><div class="num"><b>09</b> / 14</div></div>
+<h2>7. A Rich Model API</h2><div class="body"><pre><span class="lang">js</span><code><span class="c">// Instance method</span>
+userSchema.methods.comparePassword = function (plain) {
+  return bcrypt.compare(plain, this.password);
+};
+
+<span class="c">// Static</span>
+userSchema.statics.findByEmail = function (email) {
+  return this.findOne({ email: email.toLowerCase() });
+};
+
+<span class="c">// Virtual (computed, not stored)</span>
+userSchema.virtual(<span class="s">'displayName'</span>).get(function () {
+  return this.name ?? this.email.split(<span class="s">'@'</span>)[0];
+});
+
+<span class="c">// Query helper</span>
+postSchema.query.published = function () {
+  return this.where({ published: true });
+};</code></pre>
+<pre><span class="lang">js</span><code>const user = await User.findByEmail(<span class="s">'ASHU@example.com'</span>);
+await user.comparePassword(<span class="s">'secret'</span>);
+const posts = await Post.find().published().sort(<span class="s">'-createdAt'</span>);</code></pre></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>09 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Advantages of ODMs</div><div class="num"><b>10</b> / 14</div></div>
+<h2>8. Flexible Schema Evolution</h2><div class="body"><p>Adding a field needs <strong>no migration</strong>. Old documents just don't have it yet, and defaults apply when they're loaded.</p>
+<pre><span class="lang">js</span><code><span class="c">// v2 of the schema</span>
+bio: { type: String, default: <span class="s">''</span> },</code></pre>
+<p>For bigger shape changes, write a one-off backfill (<code>updateMany</code>) or read both shapes during a transition. That's still much lighter than <code>ALTER TABLE</code> on a huge table.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>10 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Advantages of ODMs</div><div class="num"><b>11</b> / 14</div></div>
+<h2>9. Productivity and Consistency</h2><div class="body"><table><thead><tr><th>Raw driver</th><th>Mongoose</th></tr></thead><tbody><tr><td><code>db.collection('users').findOne({ _id: new ObjectId(id) })</code></td><td><code>User.findById(id)</code></td></tr><tr><td>Manual <code>$in</code> lookups</td><td><code>.populate('author')</code></td></tr><tr><td>Validate in every route</td><td>Validate in the schema</td></tr><tr><td><code>updatedAt: new Date()</code> on every update</td><td><code>timestamps: true</code></td></tr></tbody></table></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>11 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Advantages of ODMs</div><div class="num"><b>12</b> / 14</div></div>
+<h2>10. TypeScript Support</h2><div class="body"><p>Mongoose infers document types from the schema:</p>
+<pre><span class="lang">ts</span><code>import { Schema, model, InferSchemaType } from <span class="s">'mongoose'</span>;
+
+const userSchema = new Schema({ email: { type: String, required: true }, age: Number });
+type User = InferSchemaType&lt;typeof userSchema&gt;;   <span class="c">// { email: string; age?: number | null }</span>
+
+const UserModel = model(<span class="s">'User'</span>, userSchema);
+const u = await UserModel.findOne();
+u?.email;   <span class="c">// string</span></code></pre>
+<p>Or define models as classes with <strong>Typegoose</strong>.</p></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>12 / 14</div></div></section>
+<section class="slide"><div class="top"><div class="kicker">Advantages of ODMs</div><div class="num"><b>13</b> / 14</div></div>
+<h2>Interview-Ready Summary</h2><div class="body"><ul><li>An ODM gives a schemaless database an <strong>app-level schema</strong>: structure, strict mode, <strong>validation</strong>, <strong>casting</strong>, <strong>defaults</strong> and <strong>timestamps</strong>.</li><li>**<code>populate()</code><strong> resolves references; </strong>middleware** centralizes logic that must always run.</li><li><strong>Methods, statics, virtuals and query helpers</strong> make models expressive.</li><li>Schemas evolve <strong>without migrations</strong>, and TypeScript types can be inferred from the schema.</li><li>These benefits have costs. See Disadvantages.</li></ul></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>13 / 14</div></div></section>
+<section class="slide outro"><div class="top"><div class="kicker">End of deck</div><div class="num"><b>14</b> / 14</div></div>
+<div style="margin-top:auto;margin-bottom:auto;position:relative"><h1>That's <span class="g">Advantages</span> of ODMs.</h1><p class="src"><em>Sources: Mongoose Docs (validation, middleware, populate, TypeScript). Full list in <a href="references.html">references</a>.</em></p>
+<div class="actions"><a class="btn primary" href="04-disadvantages.html">Next deck: Disadvantages of ODMs →</a><a class="btn" href="../index.html">All decks</a><a class="btn" href="https://instagram.com/devflow_ai" target="_blank" rel="noopener">@devflow_ai</a></div></div><div class="foot"><div class="brand">devflow<span>_</span>ai</div><div>ODM</div><div>14 / 14</div></div></section>
+</div></main>
+<nav class="hud" aria-label="Slide controls"><a href="../index.html">☰ All decks</a><button data-prev aria-label="Previous slide">←</button><span class="count" aria-live="polite"></span><button data-next aria-label="Next slide">→</button><button data-fs aria-label="Toggle fullscreen">⛶</button></nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.stage'),count=document.querySelector('.count'),bar=document.querySelector('.bar');
+let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900)*.96;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+function autofit(sl){const b=sl.querySelector('.body');if(!b||b.dataset.fit)return;b.dataset.fit=1;let fs=1;
+ while(b.scrollHeight>b.clientHeight+2&&fs>.62){fs-=.04;b.style.setProperty('--fs',fs)}
+ if(b.scrollHeight>b.clientHeight+2)b.classList.add('scroll')}
+function show(n){i=Math.min(Math.max(n,0),slides.length-1);slides.forEach((s,k)=>s.classList.toggle('on',k===i));autofit(slides[i]);
+ count.textContent=`${i+1} / ${slides.length}`;bar.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'','#'+(i+1))}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(i+(d<0?1:-1));tx=null});
+document.querySelector('[data-prev]').onclick=()=>show(i-1);document.querySelector('[data-next]').onclick=()=>show(i+1);
+document.querySelector('[data-fs]').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+addEventListener('resize',fit);fit();show(i);
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{slides.forEach(s=>{delete s.querySelector('.body')?.dataset.fit;s.querySelector('.body')?.style.removeProperty('--fs')});show(i)});
+</script></body></html>
